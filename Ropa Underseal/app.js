@@ -1073,10 +1073,26 @@ function openSection(section) {
             
         case 'vault':
         case 'case':
-            addTerminalLine('=================================================', 'error');
-            addTerminalLine('  ACCESO DENEGADO', 'error');
-            addTerminalLine('=================================================', 'error');
-            addTerminalLine('Se requiere completar los casos primero.', 'warning');
+            if (unlockedSections.indexOf('vault') !== -1 || terminalLevel >= 5) {
+                addTerminalLine('════════════════════════════════════════', 'info');
+                addTerminalLine('ABRIENDO VAULT CLASIFICADO...', 'success');
+                addTerminalLine('════════════════════════════════════════', 'info');
+                addTerminalLine('');
+                addTerminalLine('  ╔═══════════════════════════════════════╗', 'warning');
+                addTerminalLine('  ║     🔐 UNDERSEAL VAULT 🔐           ║', 'warning');
+                addTerminalLine('  ╚═══════════════════════════════════════╝', 'warning');
+                addTerminalLine('');
+                addTerminalLine('  ACCEDIENDO A ARCHIVOS CLASIFICADOS...', 'success');
+                setTimeout(function() {
+                    window.open('../vault/index.html', '_blank');
+                }, 1000);
+            } else {
+                addTerminalLine('════════════════════════════════════════', 'error');
+                addTerminalLine('  ACCESO DENEGADO', 'error');
+                addTerminalLine('════════════════════════════════════════', 'error');
+                addTerminalLine('Se requiere clave maestra: UNDERSEAL-2024', 'warning');
+                addTerminalLine('Busca en archivos ocultos.', 'info');
+            }
             break;
             
         default:
