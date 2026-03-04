@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNDERDECK - Casino Clandestino</title>
+    <link rel="stylesheet" href="casino.css">
+</head>
+<body class="casino-body">
+    <!-- Clandestine Effects -->
+    <div class="smoke-overlay"></div>
+    <div class="flicker-overlay"></div>
+    <div class="surveillance-overlay"></div>
+    
+    <!-- Overlay de acceso -->
+    <div id="access-overlay" class="overlay">
+        <div class="access-box">
+            <div class="access-header">
+                <span class="blink">🔒</span> ACCESO RESTRINGIDO <span class="blink">🔒</span>
+            </div>
+            <p>Esta zona está reservada para operadores autorizados.</p>
+            <div class="access-input-group">
+                <input type="password" id="access-code" placeholder="Ingresa código de acceso">
+                <button id="access-btn" class="btn-access">ENTRAR</button>
+            </div>
+            <p id="access-error" class="error-msg"></p>
+        </div>
+    </div>
+
+    <!-- Main Casino -->
+    <div id="casino-container" class="casino-container hidden">
+        <!-- Header -->
+        <header class="casino-header">
+            <div class="logo-section">
+                <h1><span class="neon-red">UNDER</span><span class="neon-green">DECK</span></h1>
+                <p class="tagline">"La suerte está sobrevalorada"</p>
+            </div>
+            <div class="user-panel">
+                <div class="fichas-display">
+                    <span class="fichas-icon">🎰</span>
+                    <span id="fichas-count">1000</span>
+                    <span class="fichas-label">FICHAS</span>
+                </div>
+                <button id="add-fichas" class="btn-small">+100 FICHAS</button>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="casino-nav">
+            <button class="nav-btn active" data-section="roulette">🎯 RULETA</button>
+            <button class="nav-btn" data-section="slots">💎 TRAGAPERRAS</button>
+            <button class="nav-btn" data-section="rewards">🏆 RECOMPENSAS</button>
+            <button class="nav-btn" data-section="rules">📋 REGLAS</button>
+        </nav>
+
+        <!-- Section: Roulette -->
+        <section id="roulette-section" class="casino-section active">
+            <div class="roulette-container">
+                <!-- Left: Real Roulette Table -->
+                <div class="roulette-table-container">
+                    <div class="roulette-table">
+                        <!-- Dozens -->
+                        <div class="betting-area dozens">
+                            <button class="roulette-bet-btn dozen" data-bet="dozen1">
+                                <span>1st 12</span>
+                                <span class="payout">x3</span>
+                            </button>
+                            <button class="roulette-bet-btn dozen" data-bet="dozen2">
+                                <span>2nd 12</span>
+                                <span class="payout">x3</span>
+                            </button>
+                            <button class="roulette-bet-btn dozen" data-bet="dozen3">
+                                <span>3rd 12</span>
+                                <span class="payout">x3</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Main number grid -->
+                        <div class="number-grid-container">
+                            <div class="zero-cell">
+                                <button class="num-btn zero-btn" data-num="0">0</button>
+                            </div>
+                            <div class="number-grid-table">
+                                <!-- Row 3 (top) -->
+                                <div class="number-row">
+                                    <button class="num-btn" data-num="3">3</button>
+                                    <button class="num-btn" data-num="6">6</button>
+                                    <button class="num-btn" data-num="9">9</button>
+                                    <button class="num-btn" data-num="12">12</button>
+                                    <button class="num-btn" data-num="15">15</button>
+                                    <button class="num-btn" data-num="18">18</button>
+                                    <button class="num-btn" data-num="21">21</button>
+                                    <button class="num-btn" data-num="24">24</button>
+                                    <button class="num-btn" data-num="27">27</button>
+                                    <button class="num-btn" data-num="30">30</button>
+                                    <button class="num-btn" data-num="33">33</button>
+                                    <button class="num-btn" data-num="36">36</button>
+                                </div>
+                                <!-- Row 2 -->
+                                <div class="number-row">
+                                    <button class="num-btn" data-num="2">2</button>
+                                    <button class="num-btn" data-num="5">5</button>
+                                    <button class="num-btn" data-num="8">8</button>
+                                    <button class="num-btn" data-num="11">11</button>
+                                    <button class="num-btn" data-num="14">14</button>
+                                    <button class="num-btn" data-num="17">17</button>
+                                    <button class="num-btn" data-num="20">20</button>
+                                    <button class="num-btn" data-num="23">23</button>
+                                    <button class="num-btn" data-num="26">26</button>
+                                    <button class="num-btn" data-num="29">29</button>
+                                    <button class="num-btn" data-num="32">32</button>
+                                    <button class="num-btn" data-num="35">35</button>
+                                </div>
+                                <!-- Row 1 (bottom) -->
+                                <div class="number-row">
+                                    <button class="num-btn" data-num="1">1</button>
+                                    <button class="num-btn" data-num="4">4</button>
+                                    <button class="num-btn" data-num="7">7</button>
+                                    <button class="num-btn" data-num="10">10</button>
+                                    <button class="num-btn" data-num="13">13</button>
+                                    <button class="num-btn" data-num="16">16</button>
+                                    <button class="num-btn" data-num="19">19</button>
+                                    <button class="num-btn" data-num="22">22</button>
+                                    <button class="num-btn" data-num="25">25</button>
+                                    <button class="num-btn" data-num="28">28</button>
+                                    <button class="num-btn" data-num="31">31</button>
+                                    <button class="num-btn" data-num="34">34</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Column bets -->
+                        <div class="betting-area columns">
+                            <button class="roulette-bet-btn column" data-bet="col1">
+                                <span class="col-label">2 to 1</span>
+                            </button>
+                            <button class="roulette-bet-btn column" data-bet="col2">
+                                <span class="col-label">2 to 1</span>
+                            </button>
+                            <button class="roulette-bet-btn column" data-bet="col3">
+                                <span class="col-label">2 to 1</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Outside bets -->
+                        <div class="betting-area outside-bets">
+                            <div class="bet-group">
+                                <button class="roulette-bet-btn half-bet" data-bet="low">1-18</button>
+                                <button class="roulette-bet-btn half-bet" data-bet="even">EVEN</button>
+                            </div>
+                            <div class="bet-group red-black">
+                                <button class="roulette-bet-btn color-bet red-bet" data-bet="red">🔴</button>
+                                <button class="roulette-bet-btn color-bet black-bet" data-bet="black">⚫</button>
+                            </div>
+                            <div class="bet-group">
+                                <button class="roulette-bet-btn half-bet" data-bet="odd">ODD</button>
+                                <button class="roulette-bet-btn half-bet" data-bet="high">19-36</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Bet controls -->
+                    <div class="bet-controls">
+                        <div class="bet-input-group">
+                            <label>APUESTA</label>
+                            <div class="bet-adjuster">
+                                <button onclick="adjustRouletteBet(-10)">-</button>
+                                <input type="number" id="roulette-bet" value="10" min="1" max="10000">
+                                <button onclick="adjustRouletteBet(10)">+</button>
+                            </div>
+                        </div>
+                        <button id="spin-roulette" class="btn-spin">🎰 GIRAR</button>
+                    </div>
+                </div>
+                
+                <!-- Right: Wheel -->
+                <div class="wheel-panel">
+                    <div class="roulette-cabinet">
+                        <div class="roulette-sign">
+                            <span class="sign-text">🎰 RULETA</span>
+                            <div class="sign-bulbs"></div>
+                        </div>
+                        
+                        <div class="roulette-wheel-area">
+                            <div class="roulette-wheel" id="roulette-wheel">
+                                <div class="wheel-ring outer-ring"></div>
+                                <div class="wheel-ring middle-ring"></div>
+                                <div class="wheel-spinner" id="wheel-spinner">
+                                    <!-- Numbers will be added by JS -->
+                                </div>
+                                <div class="wheel-center"></div>
+                                <div class="wheel-pockets">
+                                    <!-- Pocket indicators -->
+                                </div>
+                            </div>
+                            <div class="wheel-pointer"></div>
+                            <div class="roulette-ball-track">
+                                <div class="roulette-ball" id="roulette-ball"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="roulette-lights">
+                            <div class="light-bulb red"></div>
+                            <div class="light-bulb green"></div>
+                            <div class="light-bulb red"></div>
+                            <div class="light-bulb green"></div>
+                            <div class="light-bulb red"></div>
+                        </div>
+                        
+                        <div class="result-display">
+                            <span class="result-label">RESULTADO</span>
+                            <span id="roulette-result-number" class="result-number">-</span>
+                        </div>
+                        
+                        <div class="current-bet-display">
+                            <span>Apuesta: </span>
+                            <span id="current-bet-type">Rojo</span>
+                            <span id="current-bet-amount">10 fichas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="game-history">
+                <h4>📊 HISTORIAL</h4>
+                <div id="roulette-history" class="history-list"></div>
+            </div>
+        </section>
+
+        <!-- Section: Slots -->
+        <section id="slots-section" class="casino-section">
+            <div class="slots-machine">
+                <div class="slots-cabinet">
+                    <!-- Top Crown/Header -->
+                    <div class="slots-crown">
+                        <div class="crown-ornament left"></div>
+                        <div class="slots-sign">
+                            <span class="sign-text">⚡ JACKPOT ⚡</span>
+                            <div class="sign-bulbs"></div>
+                        </div>
+                        <div class="crown-ornament right"></div>
+                    </div>
+                    
+                    <!-- Main Display Area -->
+                    <div class="slots-display">
+                        <div class="slot-frame">
+                            <div class="slot-glass"></div>
+                            <div class="slots-reels">
+                                <div class="slot-reel" id="slot1">
+                                    <div class="reel-strip"></div>
+                                    <div class="reel-overlay top"></div>
+                                    <div class="reel-overlay bottom"></div>
+                                </div>
+                                <div class="slot-reel" id="slot2">
+                                    <div class="reel-strip"></div>
+                                    <div class="reel-overlay top"></div>
+                                    <div class="reel-overlay bottom"></div>
+                                </div>
+                                <div class="slot-reel" id="slot3">
+                                    <div class="reel-strip"></div>
+                                    <div class="reel-overlay top"></div>
+                                    <div class="reel-overlay bottom"></div>
+                                </div>
+                            </div>
+                            <div class="slots-payline"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Prize Display -->
+                    <div class="slots-prize-area">
+                        <div class="slots-jackpot-display">
+                            <div class="prize-box">
+                                <span class="prize-label">PREMIO</span>
+                                <span id="slots-last-win" class="prize-value">0</span>
+                            </div>
+                        </div>
+                        <div class="slots-multiplier-display">
+                            <div class="multiplier-box">
+                                <span class="multiplier-label">MULTIPLICADOR</span>
+                                <span id="slots-multiplier" class="multiplier-value">x1</span>
+                            </div>
+                        </div>
+                        <div class="slots-jackpot-display jackpot-box">
+                            <div class="prize-box">
+                                <span class="prize-label">JACKPOT</span>
+                                <span id="slots-jackpot" class="prize-value jackpot">5000</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Control Panel -->
+                    <div class="slots-controls">
+                        <div class="bet-input full-width">
+                            <label>APUESTA</label>
+                            <div class="input-wrapper centered">
+                                <button class="bet-btn-small" onclick="adjustBet(-10)">-</button>
+                                <input type="number" id="slots-bet" value="10" min="1" max="1000">
+                                <button class="bet-btn-small" onclick="adjustBet(10)">+</button>
+                            </div>
+                        </div>
+                        
+                        <button id="spin-slots" class="btn-spin">
+                            <span class="btn-text">🎰 GIRAR</span>
+                            <span class="btn-glow"></span>
+                        </button>
+                    </div>
+
+                    <!-- Decorative Lights -->
+                    <div class="slots-lights">
+                        <div class="light-string">
+                            <div class="light-bulb red"></div>
+                            <div class="light-bulb yellow"></div>
+                            <div class="light-bulb green"></div>
+                            <div class="light-bulb blue"></div>
+                            <div class="light-bulb red"></div>
+                            <div class="light-bulb yellow"></div>
+                            <div class="light-bulb green"></div>
+                            <div class="light-bulb blue"></div>
+                            <div class="light-bulb red"></div>
+                            <div class="light-bulb yellow"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Paytable Panel -->
+                <div class="slots-paytable">
+                    <h4>📜 TABLA DE PREMIOS</h4>
+                    <div class="paytable-section">
+                        <h5>🎯 3 IGUALES</h5>
+                        <div class="paytable-row premium">
+                            <span>👑👑👑</span>
+                            <span class="payout">x50</span>
+                        </div>
+                        <div class="paytable-row">
+                            <span>🗝️🗝️🗝️</span>
+                            <span class="payout">x30</span>
+                        </div>
+                        <div class="paytable-row">
+                            <span>📜📜📜</span>
+                            <span class="payout">x20</span>
+                        </div>
+                        <div class="paytable-row">
+                            <span>💰💰💰</span>
+                            <span class="payout">x15</span>
+                        </div>
+                        <div class="paytable-row">
+                            <span>🎭🎭🎭</span>
+                            <span class="payout">x10</span>
+                        </div>
+                        <div class="paytable-row">
+                            <span>🕯️🕯️🕯️</span>
+                            <span class="payout">x5</span>
+                        </div>
+                    </div>
+                    <div class="paytable-section bonus">
+                        <h5>🎁 COMBO</h5>
+                        <div class="paytable-row">
+                            <span>👑 + 🗝️ + 📜</span>
+                            <span class="payout">x25</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="game-history">
+                <h4>📊 ÚLTIMOS GIROS</h4>
+                <div id="slots-history" class="history-list"></div>
+            </div>
+        </section>
+
+        <!-- Section: Rewards -->
+        <section id="rewards-section" class="casino-section">
+            <div class="rewards-container">
+                <div class="rewards-status">
+                    <h3>🎖️ PROGRESO</h3>
+                    <div class="progress-bar">
+                        <div id="reward-progress" class="progress-fill" style="width: 0%"></div>
+                    </div>
+                    <p><span id="fichas-gained">0</span> / <span id="fichas-needed">1000</span> fichas ganadas</p>
+                </div>
+
+                <div class="rewards-unlocked">
+                    <h3>🔓 RECOMPENSAS DESBLOQUEADAS</h3>
+                    <div id="rewards-list" class="rewards-grid">
+                        <div class="reward-card locked" data-reward="drop">
+                            <div class="reward-icon">👕</div>
+                            <div class="reward-name">DROP SECRETO</div>
+                            <div class="reward-desc">Producto oculto en catálogo</div>
+                            <div class="reward-req">1000 fichas</div>
+                        </div>
+                        <div class="reward-card locked" data-reward="badge">
+                            <div class="reward-icon">🎖️</div>
+                            <div class="reward-name">INSIGNIA VIP</div>
+                            <div class="reward-desc">Badge de jugador experto</div>
+                            <div class="reward-req">5000 fichas</div>
+                        </div>
+                        <div class="reward-card locked" data-reward="code">
+                            <div class="reward-icon">🔑</div>
+                            <div class="reward-name">CÓDIGO MAESTRO</div>
+                            <div class="reward-desc">Clave para Vault</div>
+                            <div class="reward-req">10000 fichas</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="secret-drop hidden" id="secret-drop">
+                    <h3>🎁 DROP SECRETO DESBLOQUEADO</h3>
+                    <div class="secret-product">
+                        <div class="product-image">🌑</div>
+                        <div class="product-info">
+                            <h4>UNDERSEAL: BLACK PASS HOODIE</h4>
+                            <p class="product-desc">Edition limitada. Solo para los elegidos.</p>
+                            <p class="product-price">PRECIO: 0 FICHAS (REGALO)</p>
+                            <button class="btn-claim">RECLAMAR</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section: Rules -->
+        <section id="rules-section" class="casino-section">
+            <div class="rules-content">
+                <h3>📋 REGLAS DEL UNDERDECK</h3>
+                
+                <div class="rule-block">
+                    <h4>🎰 General</h4>
+                    <ul>
+                        <li>Solo se usan FICHAS INTERNAS - ningún valor real</li>
+                        <li>Las fichas se guardan automáticamente</li>
+                        <li>Puedes conseguir fichas gratis (+100 cada vez)</li>
+                        <li>Al perder todo, puedes recargar</li>
+                    </ul>
+                </div>
+
+                <div class="rule-block">
+                    <h4>🎯 Ruleta</h4>
+                    <ul>
+                        <li>Rojo/Negro: Premio x2</li>
+                        <li>Verde (0): Premio x10</li>
+                        <li>Par/Impar: Premio x2</li>
+                    </ul>
+                </div>
+
+                <div class="rule-block">
+                    <h4>💎 Tragaperras</h4>
+                    <ul>
+                        <li>5 símbolos iguales: Premio x100</li>
+                        <li>4 símbolos iguales: Premio x50</li>
+                        <li>3 símbolos iguales: Premio x25</li>
+                        <li>Premios dependiendo del símbolo</li>
+                    </ul>
+                </div>
+
+                <div class="rule-block">
+                    <h4>🏆 Recompensas</h4>
+                    <ul>
+                        <li>1000 fichas: DROP SECRETO en catálogo</li>
+                        <li>5000 fichas: Insignia VIP</li>
+                        <li>10000 fichas: Código maestro</li>
+                    </ul>
+                </div>
+
+                <div class="rule-warning">
+                    <p>⚠️ Todo es simulación. No apuesta dinero real.</p>
+                    <p>Juega con responsabilidad... o no. Aquí no hay reglas.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Message Toast -->
+        <div id="message-toast" class="toast hidden"></div>
+    </div>
+
+    <!-- Audio elements for sound effects -->
+    <audio id="spin-sound" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU" preload="auto"></audio>
+    <audio id="win-sound" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU" preload="auto"></audio>
+    <audio id="lose-sound" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU" preload="auto"></audio>
+
+    <script src="casino.js"></script>
+</body>
+</html>
