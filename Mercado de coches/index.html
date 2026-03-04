@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNDERSEAL | Mercado Negro de Coches de Lujo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@300;400;500;700&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="market-body">
+    <!-- Fondo Animated -->
+    <div class="matrix-bg"></div>
+    <div class="grid-overlay"></div>
+    
+    <!-- Overlay de Acceso -->
+    <div class="access-overlay" id="accessOverlay">
+        <div class="access-container">
+            <div class="access-header">
+                <div class="logo-icon">◇</div>
+                <h1>UNDERSEAL</h1>
+                <p class="access-subtitle">MERCADO NEGRO</p>
+            </div>
+            <div class="access-warning">
+                <span class="warning-icon">⚠</span>
+                <p>ACCESO RESTRINGIDO A CLIENTES VERIFICADOS</p>
+                <p class="small">¿tiene código de acceso?</p>
+            </div>
+            <form class="access-form" id="accessForm">
+                <input type="password" id="accessCode" placeholder="••••••••" autocomplete="off">
+                <button type="submit" class="access-btn">
+                    <span>ACCEDER</span>
+                    <div class="btn-glow"></div>
+                </button>
+            </form>
+            <div class="access-info">
+                <p>Código disponible bajo solicitud en <span class="gold">@underseal_vip</span></p>
+            </div>
+            <div class="enter-anyway">
+                <button class="bypass-btn" onclick="bypassAccess()">
+                    <span class="blink">»</span> ENTRAR COMO INVITADO <span class="blink">«</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Principal -->
+    <header class="market-header">
+        <div class="header-left">
+            <div class="logo">◇ UNDERSEAL</div>
+            <nav class="main-nav">
+                <a href="#" class="nav-link active" data-section="inicio">INICIO</a>
+                <a href="#" class="nav-link" data-section="catalogo">CATÁLOGO</a>
+                <a href="#" class="nav-link" data-section="contacto">CONTACTO</a>
+            </nav>
+        </div>
+        <div class="header-right">
+            <div class="search-box">
+                <input type="text" placeholder="BUSCAR..." id="searchInput">
+                <span class="search-icon">⌕</span>
+            </div>
+            <div class="cart-icon" onclick="toggleCart()">
+                <span class="cart-count">0</span>
+                <span class="cart-label">CESTA</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sidebar de Categorías -->
+    <aside class="categories-sidebar">
+        <div class="sidebar-header">
+            <span class="sidebar-title">CATEGORÍAS</span>
+            <div class="sidebar-line"></div>
+        </div>
+        <ul class="categories-list">
+            <li>
+                <button class="category-btn active" data-category="todos">
+                    <span class="cat-icon">◈</span>
+                    <span class="cat-name">TODOS</span>
+                    <span class="cat-count">12</span>
+                </button>
+            </li>
+            <li>
+                <button class="category-btn" data-category="supersport">
+                    <span class="cat-icon">⚡</span>
+                    <span class="cat-name">SUPERDEPORTIVOS</span>
+                    <span class="cat-count">3</span>
+                </button>
+            </li>
+            <li>
+                <button class="category-btn" data-category="luxury">
+                    <span class="cat-icon">👑</span>
+                    <span class="cat-name">LUXURY SEDAN</span>
+                    <span class="cat-count">3</span>
+                </button>
+            </li>
+            <li>
+                <button class="category-btn" data-category="suv">
+                    <span class="cat-icon">⬡</span>
+                    <span class="cat-name">SUV PREMIUM</span>
+                    <span class="cat-count">2</span>
+                </button>
+            </li>
+            <li>
+                <button class="category-btn" data-category="muscle">
+                    <span class="cat-icon">🔥</span>
+                    <span class="cat-name">MUSCLE CAR</span>
+                    <span class="cat-count">2</span>
+                </button>
+            </li>
+            <li>
+                <button class="category-btn" data-category="classic">
+                    <span class="cat-icon">⌘</span>
+                    <span class="cat-name">CLÁSICOS</span>
+                    <span class="cat-count">2</span>
+                </button>
+            </li>
+        </ul>
+        
+        <div class="sidebar-filters">
+            <div class="filter-header">
+                <span>FILTROS</span>
+            </div>
+            <div class="filter-group">
+                <label>Precio</label>
+                <select id="priceFilter">
+                    <option value="todos">Cualquiera</option>
+                    <option value="0-500000">0 - 500K€</option>
+                    <option value="500000-1000000">500K - 1M€</option>
+                    <option value="1000000+">1M€+</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Año</label>
+                <select id="yearFilter">
+                    <option value="todos">Cualquiera</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="antiguo">Antiguo</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Procedencia</label>
+                <select id="originFilter">
+                    <option value="todos">Cualquiera</option>
+                    <option value="europa">Europa</option>
+                    <option value="usa">USA</option>
+                    <option value="asia">Asia</option>
+                </select>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <main class="main-content">
+        <!-- Sección Inicio -->
+        <section class="hero-section" id="inicio">
+            <div class="hero-content">
+                <div class="hero-badge">MERCADO NEGRO</div>
+                <h1 class="hero-title">COCHES DE LUJO<br><span class="highlight">CLANDESTINOS</span></h1>
+                <p class="hero-description">
+                    Exclusivos vehículos de alta gama sin preguntas. 
+                    Documentación perfecta garantizada. Entrega discreta.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">247</span>
+                        <span class="stat-label">Vehículos Vendidos</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">98%</span>
+                        <span class="stat-label">Satisfacción</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">24h</span>
+                        <span class="stat-label">Entrega Express</span>
+                    </div>
+                </div>
+                <button class="cta-btn" onclick="scrollToCatalog()">
+                    <span>EXPLORAR CATÁLOGO</span>
+                    <span class="cta-arrow">→</span>
+                </button>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-carousel">
+                    <div class="carousel-track">
+                        <div class="carousel-item active">
+                            <div class="car-preview">
+                                <img src="imagenes/paganihuayra.jpg" alt="Pagani Huayra" class="carousel-img">
+                                <div class="car-name">PAGANI HUAYRA</div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="car-preview">
+                                <img src="imagenes/ferrarimonza.jpg" alt="Ferrari Monza" class="carousel-img">
+                                <div class="car-name">FERRARI MONZA</div>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <div class="car-preview">
+                                <img src="imagenes/bugattichiron.jpg" alt="Bugatti Chiron" class="carousel-img">
+                                <div class="car-name">BUGATTI CHIRON</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección Catálogo -->
+        <section class="catalog-section" id="catalogo">
+            <div class="catalog-header">
+                <h2 class="section-title">CATÁLOGO <span class="title-accent">EXCLUSIVO</span></h2>
+                <div class="catalog-controls">
+                    <span class="results-count">Mostrando <span id="visibleCount">12</span> vehículos</span>
+                    <div class="view-toggle">
+                        <button class="view-btn active" data-view="grid">▦</button>
+                        <button class="view-btn" data-view="list">≡</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="cars-grid" id="carsGrid">
+                <!-- Los coches se cargarán dinámicamente -->
+            </div>
+        </section>
+
+        <!-- Sección Contacto -->
+        <section class="contact-section" id="contacto">
+            <div class="contact-container">
+                <h2 class="section-title">CONTACTO <span class="title-accent">SEGURO</span></h2>
+                <div class="contact-grid">
+                    <div class="contact-card">
+                        <div class="contact-icon">📱</div>
+                        <h3>WhatsApp</h3>
+                        <p>+XX XXX XXX XXX</p>
+                        <span class="status online">● Disponible</span>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon">✉️</div>
+                        <h3>Email Cifrado</h3>
+                        <p>contacto@underseal.onion</p>
+                        <span class="status">Respuesta en 24h</span>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon">📍</div>
+                        <h3>Entrega</h3>
+                        <p>Europa / España</p>
+                        <span class="status">Discreción total</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Detalles del Coche -->
+    <div class="car-modal" id="carModal">
+        <div class="modal-backdrop" onclick="closeModal()"></div>
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="modal-grid">
+                <div class="modal-image">
+                    <div class="image-placeholder" id="modalImage">
+                        <span class="placeholder-icon">🏎️</span>
+                    </div>
+                    <div class="image-gallery">
+                        <button class="gallery-btn active">1</button>
+                        <button class="gallery-btn">2</button>
+                        <button class="gallery-btn">3</button>
+                    </div>
+                </div>
+                <div class="modal-info">
+                    <div class="modal-badge" id="modalBadge">SUPERDEPORTIVO</div>
+                    <h2 class="modal-title" id="modalTitle">Nombre del Coche</h2>
+                    <div class="modal-price" id="modalPrice">€0,000,000</div>
+                    
+                    <div class="modal-specs">
+                        <div class="spec-item">
+                            <span class="spec-label">AÑO</span>
+                            <span class="spec-value" id="modalYear">2024</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">KILOMETRAJE</span>
+                            <span class="spec-value" id="modalKm">0 km</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">PROCEDENCIA</span>
+                            <span class="spec-value" id="modalOrigin">Europa</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">MOTOR</span>
+                            <span class="spec-value" id="modalEngine">V12</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">POTENCIA</span>
+                            <span class="spec-value" id="modalPower">0 CV</span>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-description">
+                        <h4>DESCRIPCIÓN</h4>
+                        <p id="modalDesc">Descripción del vehículo...</p>
+                    </div>
+                    
+                    <div class="modal-features">
+                        <h4>CARACTERÍSTICAS</h4>
+                        <ul id="modalFeatures">
+                            <!-- Se cargan dinámicamente -->
+                        </ul>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button class="btn-primary" onclick="inquireCar()">
+                            <span>SOLICITAR INFORMACIÓN</span>
+                        </button>
+                        <button class="btn-secondary" onclick="addToCompare()">
+                            <span>AÑADIR A COMPARAR</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carrito/Comparador Flotante -->
+    <div class="floating-cart" id="floatingCart">
+        <div class="cart-header">
+            <span class="cart-title">COMPARADOR</span>
+            <button class="cart-close" onclick="toggleCompare()">×</button>
+        </div>
+        <div class="cart-items" id="compareList">
+            <div class="empty-cart">
+                <span>Sin vehículos para comparar</span>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <button class="compare-btn" onclick="compareCars()">COMPARAR SELECCIONADOS</button>
+        </div>
+    </div>
+
+    <!-- Comparador Modal -->
+    <div class="compare-modal" id="compareModal">
+        <div class="compare-backdrop" onclick="closeCompare()"></div>
+        <div class="compare-content">
+            <button class="compare-close" onclick="closeCompare()">×</button>
+            <h2 class="compare-title">COMPARACIÓN DE VEHÍCULOS</h2>
+            <div class="compare-table" id="compareTable">
+                <!-- Se genera dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notificaciones Toast -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Footer -->
+    <footer class="market-footer">
+        <div class="footer-content">
+            <div class="footer-logo">◇ UNDERSEAL</div>
+            <div class="footer-links">
+                <a href="#">Términos</a>
+                <a href="#">Privacidad</a>
+                <a href="#">FAQ</a>
+            </div>
+            <div class="footer-copy">
+                <p>© 2024 UNDERSEAL. Todos los derechos reservados.</p>
+                <p class="disclaimer">Vehículos vendidos tal cual. Sin garantías.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
