@@ -164,45 +164,190 @@ function playSound(type) {
 // ==================== DATOS ====================
 // Access code removed for security - use environment variable or server-side auth
 
-// European Roulette Numbers (clockwise from top)
-const ROULETTE_NUMBERS = [
-    { num: 0, color: 'green' },
-    { num: 32, color: 'red' },
-    { num: 15, color: 'black' },
-    { num: 19, color: 'red' },
-    { num: 4, color: 'black' },
-    { num: 21, color: 'red' },
-    { num: 2, color: 'black' },
-    { num: 25, color: 'red' },
-    { num: 17, color: 'black' },
-    { num: 34, color: 'red' },
-    { num: 6, color: 'black' },
-    { num: 27, color: 'red' },
-    { num: 13, color: 'black' },
-    { num: 36, color: 'red' },
-    { num: 11, color: 'black' },
-    { num: 30, color: 'red' },
-    { num: 8, color: 'black' },
-    { num: 23, color: 'red' },
-    { num: 10, color: 'black' },
-    { num: 5, color: 'red' },
-    { num: 24, color: 'black' },
-    { num: 16, color: 'red' },
-    { num: 33, color: 'black' },
-    { num: 1, color: 'red' },
-    { num: 20, color: 'black' },
-    { num: 14, color: 'red' },
-    { num: 31, color: 'black' },
-    { num: 9, color: 'red' },
-    { num: 22, color: 'black' },
-    { num: 18, color: 'red' },
-    { num: 29, color: 'black' },
-    { num: 7, color: 'red' },
-    { num: 28, color: 'black' },
-    { num: 12, color: 'red' },
-    { num: 35, color: 'black' },
-    { num: 3, color: 'red' }
-];
+// European Roulette - Orden exacto de ruleta europea
+// El 0 está arriba, los números van en sentido horario
+const EUROPEAN_ORDER = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
+
+// Colores oficiales de la ruleta europea
+const ROULETTE_COLORS = {
+    0: 'green',
+    1: 'red', 2: 'black', 3: 'red', 4: 'black', 5: 'red', 6: 'black',
+    7: 'red', 8: 'black', 9: 'red', 10: 'black', 11: 'red', 12: 'black',
+    13: 'red', 14: 'black', 15: 'red', 16: 'black', 17: 'red', 18: 'black',
+    19: 'red', 20: 'black', 21: 'red', 22: 'black', 23: 'red', 24: 'black',
+    25: 'red', 26: 'black', 27: 'red', 28: 'black', 29: 'red', 30: 'black',
+    31: 'red', 32: 'black', 33: 'red', 34: 'black', 35: 'red', 36: 'black'
+};
+
+// Array de 37 números para compatibilidad
+const ROULETTE_NUMBERS = EUROPEAN_ORDER.map(n => ({ num: n, color: ROULETTE_COLORS[n] }));
+
+// === FUNCIONES DE LA RULETA EUROPEA ===
+
+// Obtiene el índice del número en el orden europeo (0-36)
+// @param {number} num - El número de la ruleta (0-36)
+// @returns {number} Índice en el array EUROPEAN_ORDER (-1 si no existe)
+function getEuropeanIndex(num) {
+    return EUROPEAN_ORDER.indexOf(num);
+}
+
+// Calcula el ángulo objetivo para un número en la ruleta
+// @param {number} num - El número de la ruleta (0-36)
+// @returns {number} Ángulo en grados donde debe detenerse la bola
+function getTargetAngle(num) {
+    const index = getEuropeanIndex(num);
+    if (index === -1) return 0;
+    
+    // Cada número ocupa 360/37 grados
+    const slotAngle = 360 / 37;
+    
+    // El 0 está a -90° (arriba), los números van en sentido horario
+    // El índice 0 (número 0) debe estar arriba
+    const angle = -90 + (index * slotAngle);
+    
+    return angle;
+}
+
+// Obtiene las coordenadas X,Y para posicionar un número en la ruleta
+// @param {number} num - El número de la ruleta
+// @param {number} radius - Radio en porcentaje (ej: 40)
+// @returns {object} {x, y} coordenadas en porcentaje
+function getWheelPosition(num, radius = 40) {
+    const angle = getTargetAngle(num);
+    const radians = angle * (Math.PI / 180);
+    
+    return {
+        x: 50 + radius * Math.cos(radians),
+        y: 50 + radius * Math.sin(radians)
+    };
+}
+
+// === ANIMACIONES DE LA RULETA ===
+
+// Calcula la rotación necesaria para que un número quede debajo del puntero
+// @param {number} winningNumber - Número ganador (0-36)
+// @returns {number} Rotación en grados
+function getWheelRotation(winningNumber) {
+    const targetAngle = getTargetAngle(winningNumber); // Ángulo donde está el número
+    const slotAngle = 360 / 37;
+    
+    // El puntero está arriba (0°), los números van en sentido horario
+    // Para que el número quede arriba, necesitamos rotar la ruleta
+    // en sentido antihorario para "traer" el número arriba
+    const rotationToTop = -targetAngle;
+    
+    // Añadir vueltas completas (mínimo 5) para efecto realista
+    const fullSpins = 1800; // 5 vueltas
+    
+    return fullSpins + rotationToTop;
+}
+
+// Anima la ruleta para que el número ganador quede debajo del puntero
+// @param {number} winningNumber - Número ganador
+// @param {HTMLElement} wheelSpinner - Elemento del spinner
+// @param {Function} onComplete - Callback cuando termine
+function animateWheelTo(winningNumber, wheelSpinner, onComplete) {
+    if (!wheelSpinner) {
+        if (onComplete) onComplete();
+        return;
+    }
+    
+    const rotation = getWheelRotation(winningNumber);
+    
+    // Animación suave con deceleración realista
+    wheelSpinner.style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+    wheelSpinner.style.transform = `rotate(${rotation}deg)`;
+    
+    // Callback después de la animación
+    if (onComplete) {
+        setTimeout(onComplete, 5000);
+    }
+}
+
+// Calcula la posición de la bola para que caiga en el número ganador
+// @param {number} winningNumber - Número ganador
+// @returns {object} {x, y} coordenadas en porcentaje para la bola
+function getBallPosition(winningNumber) {
+    // La bola cae un poco más hacia el centro que los números
+    const targetAngle = getTargetAngle(winningNumber);
+    const radians = targetAngle * (Math.PI / 180);
+    
+    // Radio más pequeño para la bola (está más cerca del centro)
+    const ballRadius = 35;
+    
+    return {
+        x: 50 + ballRadius * Math.cos(radians),
+        y: 50 + ballRadius * Math.sin(radians)
+    };
+}
+
+// Anima la bola para que caiga exactamente en el número ganador
+// @param {number} winningNumber - Número ganador
+// @param {HTMLElement} ball - Elemento de la bola
+// @param {Function} onComplete - Callback cuando termine
+function animateBallTo(winningNumber, ball, onComplete) {
+    if (!ball) {
+        if (onComplete) onComplete();
+        return;
+    }
+    
+    const pos = getBallPosition(winningNumber);
+    
+    // Primero mostrar la bola
+    ball.style.display = 'block';
+    
+    // Animación de la bola: spin rápido + caída al número
+    // Fase 1: Girar rápido por la pista (1.5s)
+    // Fase 2: Caer al número con rebote (2s)
+    
+    // Posición inicial: arriba
+    ball.style.left = '50%';
+    ball.style.top = '0%';
+    ball.style.transform = 'translate(-50%, -50%)';
+    ball.style.transition = 'none';
+    
+    // Después de un momento, empezar a girar
+    setTimeout(() => {
+        // Fase de spin rápido por la pista
+        ball.style.transition = 'left 1.5s ease-out, top 1.5s ease-out';
+        
+        // Girar por la pista primero (varias vueltas)
+        // Usamos posiciones intermedias para simular el giro
+        let spinTime = 0;
+        const spinInterval = setInterval(() => {
+            // Posición aleatoria en la pista mientras gira
+            const randomAngle = Math.random() * 360;
+            const rad = randomAngle * (Math.PI / 180);
+            ball.style.left = (50 + 42 * Math.cos(rad)) + '%';
+            ball.style.top = (50 + 42 * Math.sin(rad)) + '%';
+            
+            spinTime += 100;
+            if (spinTime >= 1200) {
+                clearInterval(spinInterval);
+                
+                // Ahora caer al número específico
+                ball.style.transition = 'left 2s cubic-bezier(0.25, 0.46, 0.45, 0.94), top 2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                ball.style.left = pos.x + '%';
+                ball.style.top = pos.y + '%';
+                
+                // Pequeño rebote al caer
+                setTimeout(() => {
+                    ball.style.transition = 'left 0.15s ease-out, top 0.15s ease-out';
+                    const bounceOffset = 3; // pixels de rebote
+                    ball.style.top = (pos.y - bounceOffset/2) + '%';
+                    
+                    setTimeout(() => {
+                        ball.style.top = pos.y + '%';
+                        
+                        if (onComplete) {
+                            setTimeout(onComplete, 200);
+                        }
+                    }, 150);
+                }, 1800);
+            }
+        }, 100);
+    }, 300);
+}
 
 const SLOT_SYMBOLS = ['🗝️', '📜', '💰', '👑', '🎭', '🕯️'];
 const SLOT_PAYOUTS = {
@@ -228,6 +373,74 @@ let state = {
     selectedBet: 'red',
     rouletteHistory: [],
     slotsHistory: []
+};
+
+// Estado de juego
+let isSpinning = false;
+let isBettingLocked = false;
+let soundEnabled = true;
+
+// Sistema de bloqueo durante el spin
+function setBettingLocked(locked) {
+    isBettingLocked = locked;
+    const overlay = document.getElementById('no-more-bets-overlay');
+    const betButtons = document.querySelectorAll('.roulette-bet-btn, .num-btn, .zero-btn');
+    const betInputs = document.querySelectorAll('.bet-adjuster button, #roulette-bet');
+    const clearBtn = document.getElementById('clear-bets');
+    
+    if (overlay) {
+        if (locked) {
+            overlay.classList.add('active');
+        } else {
+            overlay.classList.remove('active');
+        }
+    }
+    
+    // Disable bet buttons during spin
+    betButtons.forEach(btn => {
+        btn.disabled = locked;
+    });
+    
+    // Disable bet inputs during spin
+    betInputs.forEach(input => {
+        input.disabled = locked;
+    });
+    
+    if (clearBtn) {
+        clearBtn.disabled = locked;
+    }
+}
+
+// Función para limpiar apuestas
+function clearBets() {
+    if (isBettingLocked) return;
+    
+    const betButtons = document.querySelectorAll('.roulette-bet-btn.selected, .num-btn.selected');
+    betButtons.forEach(btn => btn.classList.remove('selected'));
+    
+    window.clearRouletteSelection();
+}
+
+// Toggle de sonido
+function toggleSound() {
+    soundEnabled = !soundEnabled;
+    const btn = document.getElementById('sound-toggle');
+    if (btn) {
+        if (soundEnabled) {
+            btn.classList.remove('muted');
+            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>';
+        } else {
+            btn.classList.add('muted');
+            btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>';
+        }
+    }
+}
+
+// Modificar playSound para respetar el toggle
+const originalPlaySound = playSound;
+playSound = function(type) {
+    if (!soundEnabled) return;
+    originalPlaySound(type);
 };
 
 // ==================== LOCALSTORAGE ====================
@@ -271,7 +484,7 @@ function adjustRouletteBet(amount) {
     let currentValue = parseInt(input.value) || 10;
     let newValue = currentValue + amount;
     if (newValue < 1) newValue = 1;
-    if (newValue > 10000) newValue = 10000;
+    // Sin límite máximo
     input.value = newValue;
 }
 
@@ -390,17 +603,31 @@ function initRoulette() {
     const numButtons = document.querySelectorAll('.num-btn');
     const wheelSpinner = document.getElementById('wheel-spinner');
     
-    // Populate wheel numbers
+    // Populate wheel numbers - posiciones reales en círculo usando ORDEN EUROPEO
     if (wheelSpinner) {
         wheelSpinner.innerHTML = '';
-        ROULETTE_NUMBERS.forEach((item, index) => {
+        
+        // Usar EUROPEAN_ORDER para posicionar correctamente los números
+        EUROPEAN_ORDER.forEach((num, index) => {
             const numDiv = document.createElement('div');
             numDiv.className = 'wheel-number';
-            numDiv.dataset.n = item.num;
-            numDiv.dataset.color = item.color;
-            numDiv.textContent = item.num;
-            const angle = (index * 360 / ROULETTE_NUMBERS.length) - 90;
-            numDiv.style.setProperty('--num-angle', angle + 'deg');
+            numDiv.dataset.n = num;
+            numDiv.dataset.color = ROULETTE_COLORS[num];
+            numDiv.textContent = num;
+            
+            // Calcular ángulo usando getTargetAngle para precisión exacta
+            const angle = getTargetAngle(num);
+            const radians = angle * (Math.PI / 180);
+            
+            // Posicionar usando transform - radio de 40% del diámetro
+            const radius = 40;
+            const x = 50 + radius * Math.cos(radians);
+            const y = 50 + radius * Math.sin(radians);
+            
+            numDiv.style.left = x + '%';
+            numDiv.style.top = y + '%';
+            numDiv.style.transform = 'translate(-50%, -50%)';
+            
             wheelSpinner.appendChild(numDiv);
         });
     }
@@ -486,11 +713,25 @@ function initRoulette() {
     // Spin button
     spinBtn.addEventListener('click', spinRoulette);
     
+    // Clear bets button
+    const clearBtn = document.getElementById('clear-bets');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', clearBets);
+    }
+    
     // Set default
     const defaultRed = document.querySelector('.roulette-bet-btn[data-bet="red"]');
     if (defaultRed) defaultRed.classList.add('selected');
     
     updateRouletteBetDisplay();
+}
+
+// Initialize sound toggle
+function initSoundToggle() {
+    const soundBtn = document.getElementById('sound-toggle');
+    if (soundBtn) {
+        soundBtn.addEventListener('click', toggleSound);
+    }
 }
 
 // Update bet display
@@ -540,8 +781,10 @@ function spinRoulette() {
     const bet = parseInt(betInput.value);
     const spinBtn = document.getElementById('spin-roulette');
     
-    if (isNaN(bet) || bet <= 0 || bet > 10000) {
-        showToast("Apuesta inválida (1-10000)", "error");
+    if (isSpinning) return;
+    
+    if (isNaN(bet) || bet <= 0) {
+        showToast("Apuesta inválida", "error");
         return;
     }
     
@@ -549,6 +792,11 @@ function spinRoulette() {
         showToast("No tienes suficientes fichas", "error");
         return;
     }
+    
+    // Activar estado spinning y bloquear apuestas
+    isSpinning = true;
+    setBettingLocked(true);
+    spinBtn.disabled = true;
     
     // Initialize audio
     try {
@@ -563,22 +811,26 @@ function spinRoulette() {
     saveState();
     updateFichasDisplay();
     
-    spinBtn.disabled = true;
-    
-    // Get winning number
-    const winningIndex = Math.floor(Math.random() * ROULETTE_NUMBERS.length);
-    const winningNumber = ROULETTE_NUMBERS[winningIndex];
+    // Get winning number (0-36)
+    const winningNumber = Math.floor(Math.random() * 37);
     
     // Elements
     const wheelSpinner = document.getElementById('wheel-spinner');
     const rouletteLights = document.querySelector('.roulette-lights');
     const ball = document.getElementById('roulette-ball');
-    const wheel = document.getElementById('roulette-wheel');
     
-    // Reset ball position
+    // === FASE 1: PREPARACIÓN ===
+    
+    // Reset wheel position
+    wheelSpinner.style.transition = 'none';
+    wheelSpinner.style.transform = 'rotate(0deg)';
+    
+    // Reset ball - posición inicial arriba
     if (ball) {
-        ball.classList.remove('spinning');
-        ball.style.cssText = '';
+        ball.style.display = 'block';
+        ball.style.left = '50%';
+        ball.style.top = '5%';
+        ball.style.transition = 'none';
     }
     
     // Add lights animation
@@ -586,54 +838,64 @@ function spinRoulette() {
         rouletteLights.classList.add('playing');
     }
     
-    // Reset wheel
-    wheelSpinner.style.transition = 'none';
-    wheelSpinner.style.transform = 'rotate(0deg)';
+    // === FASE 2: SPIN - La ruleta gira ===
     
-    // Calculate positions
-    const wheelRotation = 1440 + (winningIndex * (360 / 37));
+    // Calcular rotación final para que el número quede debajo del puntero
+    const targetAngle = getTargetAngle(winningNumber);
+    const finalRotation = 1800 + (-90 - targetAngle);
     
-    // Start wheel spin
+    // Iniciar animación de la ruleta
     setTimeout(() => {
-        wheelSpinner.style.transition = 'transform 4s cubic-bezier(0.15, 0.9, 0.2, 1)';
-        wheelSpinner.style.transform = `rotate(${wheelRotation}deg)`;
-    }, 50);
-    
-    // Start ball spinning after wheel starts
-    setTimeout(() => {
+        wheelSpinner.style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+        wheelSpinner.style.transform = `rotate(${finalRotation}deg)`;
+        
+        // Animación de la bola: cae hacia el centro
         if (ball) {
-            ball.classList.add('spinning');
-            // Ball spins counter to wheel, then slows down
-            ball.style.cssText = `
-                animation: ballSpin 3s ease-out forwards;
-                --target-angle: ${-wheelRotation + 180}deg;
-            `;
-            
-            // Ball clicking sounds
-            let clickCount = 0;
-            const clickInterval = setInterval(() => {
-                playSound('ball');
-                clickCount++;
-                if (clickCount >= 15) clearInterval(clickInterval);
-            }, 180);
+            ball.style.transition = 'top 2s ease-in';
+            ball.style.top = '15%';
         }
-    }, 200);
+    }, 100);
     
-    // Show result after spin completes
+    // === FASE 4: RESULTADO ===
     setTimeout(() => {
         const resultDisplay = document.getElementById('roulette-result-number');
-        resultDisplay.textContent = winningNumber.num;
-        resultDisplay.className = 'result-number ' + winningNumber.color;
+        resultDisplay.textContent = winningNumber;
+        resultDisplay.className = 'result-number ' + ROULETTE_COLORS[winningNumber];
+        
+        // Highlight winning number on wheel
+        const wheelNumbers = document.querySelectorAll('.wheel-number');
+        wheelNumbers.forEach(num => {
+            if (parseInt(num.dataset.n) === winningNumber) {
+                num.classList.add('winner');
+                setTimeout(() => num.classList.remove('winner'), 2000);
+            }
+        });
         
         // Stop lights
         if (rouletteLights) {
             rouletteLights.classList.remove('playing');
         }
         
+        // Pequeño rebote de la bola
+        if (ball) {
+            ball.style.transition = 'top 0.1s ease-out';
+            ball.style.top = '8%';
+            setTimeout(() => {
+                ball.style.top = '10%';
+            }, 100);
+        }
+        
         // Resolve bet
-        resolveRouletteBet(winningNumber, bet);
-        spinBtn.disabled = false;
-    }, 4200);
+        resolveRouletteBet({ num: winningNumber, color: ROULETTE_COLORS[winningNumber] }, bet);
+        
+        // Desbloquear apuestas
+        setTimeout(() => {
+            isSpinning = false;
+            setBettingLocked(false);
+            spinBtn.disabled = false;
+        }, 500);
+        
+    }, 5300);
 }
 
 function resolveRouletteBet(result, bet) {
@@ -1069,6 +1331,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSlots();
     initRewards();
     initFichas();
+    initSoundToggle();
     renderRouletteHistory();
     renderSlotsHistory();
     

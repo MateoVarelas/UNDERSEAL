@@ -595,10 +595,9 @@ function executeCommand(cmd) {
         },
         
         'ls': () => {
-            addTerminalOutput('directorio actual: /var/www/html', 'output');
+            addTerminalOutput('directorio: /var/www/html', 'output');
             addTerminalOutput('  .hidden/', 'output');
-            addTerminalOutput('  [acceso a otros archivos restringido]', 'warning');
-            addTerminalOutput('Escribe "cat .hidden/notes.txt" para continuar', 'info');
+            addTerminalOutput('Escribe: cat .hidden/notes.txt', 'info');
         },
         
         'cat': (args) => {
@@ -651,7 +650,8 @@ function executeCommand(cmd) {
         
         'brute': () => {
             if (terminalLevel < 2) {
-                addTerminalOutput('Error: acceso denegado', 'error');
+                addTerminalOutput('ERROR: Necesitas nivel 2', 'error');
+                addTerminalOutput('Escribe: cat .hidden/notes.txt', 'info');
                 return;
             }
             

@@ -32,16 +32,21 @@
         <!-- Header -->
         <header class="casino-header">
             <div class="logo-section">
-                <h1><span class="neon-red">UNDER</span><span class="neon-green">DECK</span></h1>
-                <p class="tagline">"La suerte está sobrevalorada"</p>
+                <h1><span class="under">UNDER</span><span class="deck">DECK</span></h1>
+                <p class="tagline">¿De verdad crees que has tenido suerte entrando aquí?</p>
             </div>
             <div class="user-panel">
-                <div class="fichas-display">
-                    <span class="fichas-icon">🎰</span>
-                    <span id="fichas-count">1000</span>
-                    <span class="fichas-label">FICHAS</span>
+                <div class="chip-display">
+                    <div class="chip-icon">🎰</div>
+                    <div class="chip-info">
+                        <span id="fichas-count" class="chip-amount">1000</span>
+                        <span class="chip-label">Fichas</span>
+                    </div>
                 </div>
-                <button id="add-fichas" class="btn-small">+100 FICHAS</button>
+                <button id="add-fichas" class="btn-reload">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                    +100
+                </button>
             </div>
         </header>
 
@@ -55,9 +60,15 @@
 
         <!-- Section: Roulette -->
         <section id="roulette-section" class="casino-section active">
-            <div class="roulette-container">
-                <!-- Left: Real Roulette Table -->
-                <div class="roulette-table-container">
+            <!-- Left Column: Betting Table -->
+            <div class="roulette-section">
+                <div class="betting-table-wrapper" style="position: relative;">
+                    <div class="no-more-bets-overlay" id="no-more-bets-overlay">
+                        <span class="no-more-bets-text">NO MORE BETS</span>
+                    </div>
+                    
+                    <h3 class="betting-table-title">MESA DE APUESTAS</h3>
+                    
                     <div class="roulette-table">
                         <!-- Dozens -->
                         <div class="betting-area dozens">
@@ -83,48 +94,48 @@
                             <div class="number-grid-table">
                                 <!-- Row 3 (top) -->
                                 <div class="number-row">
-                                    <button class="num-btn" data-num="3">3</button>
-                                    <button class="num-btn" data-num="6">6</button>
-                                    <button class="num-btn" data-num="9">9</button>
-                                    <button class="num-btn" data-num="12">12</button>
-                                    <button class="num-btn" data-num="15">15</button>
-                                    <button class="num-btn" data-num="18">18</button>
-                                    <button class="num-btn" data-num="21">21</button>
-                                    <button class="num-btn" data-num="24">24</button>
-                                    <button class="num-btn" data-num="27">27</button>
-                                    <button class="num-btn" data-num="30">30</button>
-                                    <button class="num-btn" data-num="33">33</button>
-                                    <button class="num-btn" data-num="36">36</button>
+                                    <button class="num-btn red" data-num="3">3</button>
+                                    <button class="num-btn black" data-num="6">6</button>
+                                    <button class="num-btn red" data-num="9">9</button>
+                                    <button class="num-btn red" data-num="12">12</button>
+                                    <button class="num-btn red" data-num="15">15</button>
+                                    <button class="num-btn black" data-num="18">18</button>
+                                    <button class="num-btn red" data-num="21">21</button>
+                                    <button class="num-btn red" data-num="24">24</button>
+                                    <button class="num-btn red" data-num="27">27</button>
+                                    <button class="num-btn red" data-num="30">30</button>
+                                    <button class="num-btn black" data-num="33">33</button>
+                                    <button class="num-btn red" data-num="36">36</button>
                                 </div>
                                 <!-- Row 2 -->
                                 <div class="number-row">
-                                    <button class="num-btn" data-num="2">2</button>
-                                    <button class="num-btn" data-num="5">5</button>
-                                    <button class="num-btn" data-num="8">8</button>
-                                    <button class="num-btn" data-num="11">11</button>
-                                    <button class="num-btn" data-num="14">14</button>
-                                    <button class="num-btn" data-num="17">17</button>
-                                    <button class="num-btn" data-num="20">20</button>
-                                    <button class="num-btn" data-num="23">23</button>
-                                    <button class="num-btn" data-num="26">26</button>
-                                    <button class="num-btn" data-num="29">29</button>
-                                    <button class="num-btn" data-num="32">32</button>
-                                    <button class="num-btn" data-num="35">35</button>
+                                    <button class="num-btn black" data-num="2">2</button>
+                                    <button class="num-btn red" data-num="5">5</button>
+                                    <button class="num-btn black" data-num="8">8</button>
+                                    <button class="num-btn red" data-num="11">11</button>
+                                    <button class="num-btn red" data-num="14">14</button>
+                                    <button class="num-btn red" data-num="17">17</button>
+                                    <button class="num-btn black" data-num="20">20</button>
+                                    <button class="num-btn red" data-num="23">23</button>
+                                    <button class="num-btn black" data-num="26">26</button>
+                                    <button class="num-btn red" data-num="29">29</button>
+                                    <button class="num-btn red" data-num="32">32</button>
+                                    <button class="num-btn black" data-num="35">35</button>
                                 </div>
                                 <!-- Row 1 (bottom) -->
                                 <div class="number-row">
-                                    <button class="num-btn" data-num="1">1</button>
-                                    <button class="num-btn" data-num="4">4</button>
-                                    <button class="num-btn" data-num="7">7</button>
-                                    <button class="num-btn" data-num="10">10</button>
-                                    <button class="num-btn" data-num="13">13</button>
-                                    <button class="num-btn" data-num="16">16</button>
-                                    <button class="num-btn" data-num="19">19</button>
-                                    <button class="num-btn" data-num="22">22</button>
-                                    <button class="num-btn" data-num="25">25</button>
-                                    <button class="num-btn" data-num="28">28</button>
-                                    <button class="num-btn" data-num="31">31</button>
-                                    <button class="num-btn" data-num="34">34</button>
+                                    <button class="num-btn red" data-num="1">1</button>
+                                    <button class="num-btn black" data-num="4">4</button>
+                                    <button class="num-btn red" data-num="7">7</button>
+                                    <button class="num-btn black" data-num="10">10</button>
+                                    <button class="num-btn red" data-num="13">13</button>
+                                    <button class="num-btn black" data-num="16">16</button>
+                                    <button class="num-btn red" data-num="19">19</button>
+                                    <button class="num-btn black" data-num="22">22</button>
+                                    <button class="num-btn red" data-num="25">25</button>
+                                    <button class="num-btn black" data-num="28">28</button>
+                                    <button class="num-btn red" data-num="31">31</button>
+                                    <button class="num-btn black" data-num="34">34</button>
                                 </div>
                             </div>
                         </div>
@@ -146,55 +157,51 @@
                         <div class="betting-area outside-bets">
                             <div class="bet-group">
                                 <button class="roulette-bet-btn half-bet" data-bet="low">1-18</button>
-                                <button class="roulette-bet-btn half-bet" data-bet="even">EVEN</button>
+                                <button class="roulette-bet-btn half-bet" data-bet="even">PAR</button>
                             </div>
                             <div class="bet-group red-black">
-                                <button class="roulette-bet-btn color-bet red-bet" data-bet="red">🔴</button>
-                                <button class="roulette-bet-btn color-bet black-bet" data-bet="black">⚫</button>
+                                <button class="roulette-bet-btn color-bet red-bet selected" data-bet="red"></button>
+                                <button class="roulette-bet-btn color-bet black-bet" data-bet="black"></button>
                             </div>
                             <div class="bet-group">
-                                <button class="roulette-bet-btn half-bet" data-bet="odd">ODD</button>
+                                <button class="roulette-bet-btn half-bet" data-bet="odd">IMPAR</button>
                                 <button class="roulette-bet-btn half-bet" data-bet="high">19-36</button>
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Bet controls -->
-                    <div class="bet-controls">
-                        <div class="bet-input-group">
-                            <label>APUESTA</label>
-                            <div class="bet-adjuster">
-                                <button onclick="adjustRouletteBet(-10)">-</button>
-                                <input type="number" id="roulette-bet" value="10" min="1" max="10000">
-                                <button onclick="adjustRouletteBet(10)">+</button>
+                    <!-- Control Panel -->
+                    <div class="control-panel" style="margin-top: 20px;">
+                        <div class="bet-controls">
+                            <div class="bet-input-group">
+                                <label>APUESTA</label>
+                                <div class="bet-adjuster">
+                                    <button onclick="adjustRouletteBet(-100)">−</button>
+                                    <input type="number" id="roulette-bet" value="10" min="1">
+                                    <button onclick="adjustRouletteBet(100)">+</button>
+                                </div>
                             </div>
+                            <button id="spin-roulette" class="btn-spin">GIRAR</button>
+                            <button id="clear-bets" class="btn-clear-bets">LIMPIAR APUESTAS</button>
                         </div>
-                        <button id="spin-roulette" class="btn-spin">🎰 GIRAR</button>
                     </div>
                 </div>
                 
-                <!-- Right: Wheel -->
+                <!-- Right Column: Wheel -->
                 <div class="wheel-panel">
                     <div class="roulette-cabinet">
                         <div class="roulette-sign">
-                            <span class="sign-text">🎰 RULETA</span>
-                            <div class="sign-bulbs"></div>
+                            <span class="sign-text"> RULETA</span>
                         </div>
                         
                         <div class="roulette-wheel-area">
+                            <div class="wheel-pointer"></div>
                             <div class="roulette-wheel" id="roulette-wheel">
-                                <div class="wheel-ring outer-ring"></div>
-                                <div class="wheel-ring middle-ring"></div>
                                 <div class="wheel-spinner" id="wheel-spinner">
-                                    <!-- Numbers will be added by JS -->
+                                    <!-- Los números se insertan aquí desde JS -->
                                 </div>
                                 <div class="wheel-center"></div>
-                                <div class="wheel-pockets">
-                                    <!-- Pocket indicators -->
-                                </div>
-                            </div>
-                            <div class="wheel-pointer"></div>
-                            <div class="roulette-ball-track">
+                                <!-- Bola FUERA del spinner para que no rote con la ruleta -->
                                 <div class="roulette-ball" id="roulette-ball"></div>
                             </div>
                         </div>
@@ -209,20 +216,20 @@
                         
                         <div class="result-display">
                             <span class="result-label">RESULTADO</span>
-                            <span id="roulette-result-number" class="result-number">-</span>
+                            <span id="roulette-result-number" class="result-number">—</span>
                         </div>
                         
                         <div class="current-bet-display">
                             <span>Apuesta: </span>
                             <span id="current-bet-type">Rojo</span>
-                            <span id="current-bet-amount">10 fichas</span>
+                            <span id="current-bet-amount">• 10 fichas</span>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="game-history">
-                <h4>📊 HISTORIAL</h4>
+                <h4>HISTORIAL</h4>
                 <div id="roulette-history" class="history-list"></div>
             </div>
         </section>
@@ -469,8 +476,13 @@
         </section>
 
         <!-- Message Toast -->
-        <div id="message-toast" class="toast hidden"></div>
+        <div id="message-toast" class="toast"></div>
     </div>
+
+    <!-- Sound Toggle -->
+    <button class="sound-toggle" id="sound-toggle" title="Alternar sonido">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+    </button>
 
     <!-- Audio elements for sound effects -->
     <audio id="spin-sound" src="data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU" preload="auto"></audio>
