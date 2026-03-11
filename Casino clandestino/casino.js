@@ -660,12 +660,15 @@ function initRoulette() {
     // Bet type buttons (outside bets, dozens, columns)
     betButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Clear previous selection
-            window.clearRouletteSelection();
+            // Only clear outside bet selection, NOT number selections
+            // This allows users to switch between outside bets without losing their number bets
+            betButtons.forEach(b => {
+                if (b !== btn) b.classList.remove('selected');
+            });
             btn.classList.add('selected');
             rouletteSelectedBet = btn.dataset.bet;
             rouletteSelectedNumber = null;
-            rouletteSelectedNumbers = [];
+            // Note: We don't clear rouletteSelectedNumbers here to preserve number bets
             updateRouletteBetDisplay();
         });
     });
