@@ -505,46 +505,6 @@ function updateFichasDisplay() {
     updateRewardsUI();
 }
 
-// ==================== SISTEMA DE ACCESO ====================
-function initAccessSystem() {
-    const overlay = document.getElementById('access-overlay');
-    const input = document.getElementById('access-code');
-    const btn = document.getElementById('access-btn');
-    const error = document.getElementById('access-error');
-    
-    // Verificar si ya tiene acceso (puedes personalizar esto)
-    const hasAccess = localStorage.getItem('underdeck_access');
-    if (hasAccess === 'true') {
-        overlay.classList.add('hidden');
-        document.getElementById('casino-container').classList.remove('hidden');
-        return;
-    }
-    
-    btn.addEventListener('click', () => checkAccess(input.value));
-    input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') checkAccess(input.value);
-    });
-}
-
-function checkAccess(code) {
-    const error = document.getElementById('access-error');
-    
-    // Validate access code - In production, use server-side validation
-    // For now, use a hardcoded code (should be environment variable or server-side)
-    const VALID_ACCESS_CODES = ['UNDERDECK', 'CASINO2024', 'VIP_ACCESS'];
-    const normalizedCode = code.trim().toUpperCase();
-    
-    if (VALID_ACCESS_CODES.includes(normalizedCode) && code.length >= 4) {
-        localStorage.setItem('underdeck_access', 'true');
-        document.getElementById('access-overlay').classList.add('hidden');
-        document.getElementById('casino-container').classList.remove('hidden');
-        showToast("¡Bienvenido al UNDERDECK!", "success");
-    } else {
-        error.textContent = "Código incorrecto. Acceso denegado.";
-        showToast("Código incorrecto", "error");
-    }
-}
-
 // ==================== NAVEGACIÓN ====================
 function initNavigation() {
     const navBtns = document.querySelectorAll('.nav-btn');
@@ -1328,7 +1288,6 @@ function initFichas() {
 // ==================== INICIALIZACIÓN ====================
 document.addEventListener('DOMContentLoaded', () => {
     loadState();
-    initAccessSystem();
     initNavigation();
     initRoulette();
     initSlots();
