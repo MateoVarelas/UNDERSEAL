@@ -14,37 +14,6 @@
     <div class="matrix-bg"></div>
     <div class="grid-overlay"></div>
     
-    <!-- Overlay de Acceso -->
-    <div class="access-overlay" id="accessOverlay">
-        <div class="access-container">
-            <div class="access-header">
-                <div class="logo-icon">◇</div>
-                <h1>UNDERSEAL</h1>
-                <p class="access-subtitle">MERCADO NEGRO</p>
-            </div>
-            <div class="access-warning">
-                <span class="warning-icon">⚠</span>
-                <p>ACCESO RESTRINGIDO A CLIENTES VERIFICADOS</p>
-                <p class="small">¿tiene código de acceso?</p>
-            </div>
-            <form class="access-form" id="accessForm">
-                <input type="password" id="accessCode" placeholder="••••••••" autocomplete="off">
-                <button type="submit" class="access-btn">
-                    <span>ACCEDER</span>
-                    <div class="btn-glow"></div>
-                </button>
-            </form>
-            <div class="access-info">
-                <p>Código disponible bajo solicitud en <span class="gold">@underseal_vip</span></p>
-            </div>
-            <div class="enter-anyway">
-                <button class="bypass-btn" onclick="bypassAccess()">
-                    <span class="blink">»</span> ENTRAR COMO INVITADO <span class="blink">«</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- Header Principal -->
     <header class="market-header">
         <div class="header-left">
@@ -56,6 +25,11 @@
             </nav>
         </div>
         <div class="header-right">
+            <div class="visitor-counter">
+                <span class="visitor-icon">👁</span>
+                <span class="visitor-count" id="visitorCount">--</span>
+                <span class="visitor-label">OBSERVANDO</span>
+            </div>
             <div class="search-box">
                 <input type="text" placeholder="BUSCAR..." id="searchInput">
                 <span class="search-icon">⌕</span>
@@ -63,6 +37,10 @@
             <div class="cart-icon" onclick="toggleCart()">
                 <span class="cart-count">0</span>
                 <span class="cart-label">CESTA</span>
+            </div>
+            <div class="favorites-icon" onclick="toggleFavorites()">
+                <span class="favorites-count" id="favoritesCount">0</span>
+                <span class="favorites-label">❤</span>
             </div>
         </div>
     </header>
@@ -337,6 +315,19 @@
         </div>
         <div class="cart-footer">
             <button class="compare-btn" onclick="compareCars()">COMPARAR SELECCIONADOS</button>
+        </div>
+    </div>
+
+    <!-- Panel de Favoritos -->
+    <div class="floating-favorites" id="floatingFavorites">
+        <div class="favorites-header">
+            <span class="favorites-title">❤ FAVORITOS</span>
+            <button class="favorites-close" onclick="toggleFavorites()">×</button>
+        </div>
+        <div class="favorites-items" id="favoritesList">
+            <div class="empty-favorites">
+                <span>Sin vehículos favoritos</span>
+            </div>
         </div>
     </div>
 

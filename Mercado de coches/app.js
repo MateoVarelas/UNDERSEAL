@@ -184,6 +184,7 @@ let state = {
     cars: [...carsDatabase],
     filteredCars: [...carsDatabase],
     compareList: [],
+    favoritesList: [],
     currentCategory: 'todos',
     currentView: 'grid',
     searchQuery: '',
@@ -191,8 +192,61 @@ let state = {
         price: 'todos',
         year: 'todos',
         origin: 'todos'
-    }
+    },
+    visitorCount: 0
 };
+
+// Cargar favoritos desde localStorage
+function loadFavorites() {
+    const saved = localStorage.getItem('underseal_favorites');
+    if (saved) {
+        state.favoritesList = JSON.parse(saved);
+    }
+}
+
+// Guardar favoritos en localStorage
+function saveFavorites() {
+    localStorage.setItem('underseal_favorites', JSON.stringify(state.favoritesList));
+}
+
+// Contador de visitantes clandestinos
+function updateVisitorCount() {
+    // Simular visitantes activos (número aleatorio entre 12 y 47)
+    state.visitorCount = Math.floor(Math.random() * 36) + 12;
+    const visitorEl = document.getElementById('visitorCount');
+    if (visitorEl) {
+        visitorEl.textContent = state.visitorCount;
+    }
+}
+
+// Actualizar precio dinámicamente (efecto mercado negro)
+function getDynamicPrice(basePrice) {
+    // Variación aleatoria entre -2% y +3%
+    const variation = (Math.random() * 0.05 - 0.02);
+    return Math.round(basePrice * (1 + variation));
+}
+
+// Inicializar precios dinámicos para todos los coches
+function initDynamicPrices() {
+    state.cars = state.cars.map(car => ({
+        ...car,
+        currentPrice: getDynamicPrice(car.price)
+    }));
+    state.filteredCars = [...state.cars];
+}
+
+// Actualizar precios cada 30 segundos
+function startPriceUpdates() {
+    setInterval(() => {
+        state.cars = state.cars.map(car => ({
+            ...car,
+            currentPrice: getDynamicPrice(car.price)
+        }));
+        // Actualizar solo los precios visibles
+        renderCars();
+        showToast('📈 Precios actualizados', 'info');
+    }, 30000);
+}
 
 // ============================================
 // INICIALIZACIÓN
@@ -202,8 +256,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initializeApp() {
-    // Verificar acceso
-    checkAccess();
+    // Cargar favoritos guardados
+    loadFavorites();
+    
+    // Inicializar precios dinámicos
+    initDynamicPrices();
+    
+    // Actualizar contador de visitantes
+    updateVisitorCount();
     
     // Renderizar catálogo
     renderCars();
@@ -213,62 +273,13 @@ function initializeApp() {
     
     // Inicializar carousel
     initCarousel();
+    
+    // Iniciar actualizaciones de precio
+    startPriceUpdates();
+    
+    // Actualizar visitantes cada 15 segundos
+    setInterval(updateVisitorCount, 15000);
 }
-
-// ============================================
-// SISTEMA DE ACCESO
-// ============================================
-function checkAccess() {
-    const access = localStorage.getItem('underseal_market_access');
-    if (access === 'granted') {
-        document.getElementById('accessOverlay').classList.add('hidden');
-    }
-}
-
-function bypassAccess() {
-    document.getElementById('accessOverlay').classList.add('hidden');
-}
-
-// Valid codes for access (simple validation with input sanitization)
-// Note: For production, use server-side validation
-const validCodes = ['UNDESEAL2024', 'VIPACCESS', 'CLANDESTINO', 'BLACKMARKET'];
-
-function validateAccessCode(code) {
-    // Input validation
-    if (!code || typeof code !== 'string') {
-        return false;
-    }
-    
-    // Sanitize: trim whitespace, uppercase, limit length
-    const sanitized = code.trim().toUpperCase();
-    
-    if (sanitized.length < 4 || sanitized.length > 20) {
-        return false;
-    }
-    
-    // Only allow alphanumeric characters
-    if (!/^[A-Z0-9]+$/.test(sanitized)) {
-        return false;
-    }
-    
-    // Validate against valid codes
-    return validCodes.includes(sanitized);
-}
-
-document.getElementById('accessForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const codeInput = document.getElementById('accessCode');
-    const code = codeInput.value;
-    
-    if (validateAccessCode(code)) {
-        localStorage.setItem('underseal_market_access', 'granted');
-        showToast('✓ Acceso concedido', 'success');
-        document.getElementById('accessOverlay').classList.add('hidden');
-    } else {
-        showToast('✗ Código inválido', 'error');
-        codeInput.value = '';
-    }
-});
 
 // ============================================
 // SEGURIDAD - Funciones de sanitización
@@ -320,6 +331,14 @@ function createCarCard(car) {
     const isInCompare = state.compareList.includes(car.id);
     const compareActive = isInCompare ? 'active' : '';
     
+    const isFavorite = state.favoritesList.includes(car.id);
+    const favoriteActive = isFavorite ? 'active' : '';
+    
+    // Usar precio dinámico
+    const displayPrice = car.currentPrice || car.price;
+    const priceChange = displayPrice !== car.price;
+    const priceClass = priceChange ? (displayPrice > car.price ? 'price-up' : 'price-down') : '';
+    
     // Sanitize dynamic content to prevent XSS
     const safeName = escapeHtml(car.name);
     const safeCategory = escapeHtml(getCategoryLabel(car.category));
@@ -327,13 +346,16 @@ function createCarCard(car) {
     const safeKm = escapeHtml(formatNumber(car.km));
     const safePower = escapeHtml(car.power);
     const safeOrigin = escapeHtml(car.origin.toUpperCase());
-    const safePrice = escapeHtml(formatPrice(car.price));
+    const safePrice = escapeHtml(formatPrice(displayPrice));
     
     card.innerHTML = `
         <div class="car-image">
             <img src="${car.image}" alt="${safeName}" class="car-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
             <span class="car-image-icon" style="display:none;">🚗</span>
             <span class="car-badge">${safeCategory}</span>
+            <button class="car-favorite ${favoriteActive}" onclick="toggleFavorite(event, ${car.id})" title="Favorito">
+                ❤
+            </button>
             <button class="car-compare ${compareActive}" onclick="toggleCompareCar(event, ${car.id})" title="Comparar">
                 ⚖
             </button>
@@ -356,14 +378,14 @@ function createCarCard(car) {
                 </div>
             </div>
             <div class="car-footer">
-                <span class="car-price">€${safePrice}</span>
+                <span class="car-price ${priceClass}">€${safePrice}</span>
                 <button class="car-action" onclick="openCarModal(${car.id})">VER DETALLES</button>
             </div>
         </div>
     `;
     
     card.addEventListener('click', (e) => {
-        if (!e.target.closest('.car-compare') && !e.target.closest('.car-action')) {
+        if (!e.target.closest('.car-favorite') && !e.target.closest('.car-compare') && !e.target.closest('.car-action')) {
             openCarModal(car.id);
         }
     });
@@ -380,11 +402,17 @@ function openCarModal(carId) {
     
     const modal = document.getElementById('carModal');
     
+    // Usar precio dinámico
+    const displayPrice = car.currentPrice || car.price;
+    const priceChange = displayPrice !== car.price;
+    const priceClass = priceChange ? (displayPrice > car.price ? 'price-up' : 'price-down') : '';
+    const priceArrow = priceChange ? (displayPrice > car.price ? '▲' : '▼') : '';
+    
     // Llenar datos
     document.getElementById('modalImage').innerHTML = `<img src="${car.image}" alt="${car.name}" class="modal-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"><span class="placeholder-icon" style="display:none;">🚗</span>`;
     document.getElementById('modalBadge').textContent = getCategoryLabel(car.category);
     document.getElementById('modalTitle').textContent = car.name;
-    document.getElementById('modalPrice').textContent = `€${formatPrice(car.price)}`;
+    document.getElementById('modalPrice').innerHTML = `<span class="${priceClass}">€${formatPrice(displayPrice)}</span> <span class="price-arrow">${priceArrow}</span>`;
     document.getElementById('modalYear').textContent = car.year;
     document.getElementById('modalKm').textContent = `${formatNumber(car.km)} km`;
     document.getElementById('modalOrigin').textContent = car.origin.toUpperCase();
@@ -476,6 +504,73 @@ function updateCompareButton() {
 function toggleCart() {
     const cart = document.getElementById('floatingCart');
     cart.classList.toggle('active');
+}
+
+// ============================================
+// SISTEMA DE FAVORITOS
+// ============================================
+function toggleFavorite(event, carId) {
+    event.stopPropagation();
+    
+    const index = state.favoritesList.indexOf(carId);
+    
+    if (index === -1) {
+        state.favoritesList.push(carId);
+        showToast('❤ Añadido a favoritos', 'success');
+    } else {
+        state.favoritesList.splice(index, 1);
+        showToast('💔 Eliminado de favoritos', 'success');
+    }
+    
+    // Guardar en localStorage
+    saveFavorites();
+    
+    // Actualizar UI
+    renderCars();
+    updateFavoritesList();
+    updateFavoritesCount();
+}
+
+function updateFavoritesList() {
+    const list = document.getElementById('favoritesList');
+    
+    if (!list) return;
+    
+    if (state.favoritesList.length === 0) {
+        list.innerHTML = '<div class="empty-favorites"><span>Sin vehículos favoritos</span></div>';
+        return;
+    }
+    
+    list.innerHTML = state.favoritesList.map(id => {
+        const car = state.cars.find(c => c.id === id);
+        if (!car) return '';
+        
+        const price = car.currentPrice || car.price;
+        
+        return `
+            <div class="favorite-item" onclick="openCarModal(${car.id})">
+                <img src="${car.image}" alt="${car.name}" class="favorite-item-img" onerror="this.style.display='none;';">
+                <span class="favorite-item-icon" style="display:none;">🚗</span>
+                <div class="favorite-item-info">
+                    <div class="favorite-item-name">${car.name}</div>
+                    <div class="favorite-item-price">€${formatPrice(price)}</div>
+                </div>
+                <button class="favorite-item-remove" onclick="toggleFavorite(event, ${car.id})">×</button>
+            </div>
+        `;
+    }).join('');
+}
+
+function updateFavoritesCount() {
+    const countEl = document.getElementById('favoritesCount');
+    if (countEl) {
+        countEl.textContent = state.favoritesList.length;
+    }
+}
+
+function toggleFavorites() {
+    const favorites = document.getElementById('floatingFavorites');
+    favorites.classList.toggle('active');
 }
 
 function compareCars() {
@@ -612,7 +707,13 @@ function applyFilters() {
     
     // Precio
     if (state.filters.price !== 'todos') {
-        const [min, max] = state.filters.price.split('-').map(Number);
+        let min, max;
+        if (state.filters.price.endsWith('+')) {
+            min = parseInt(state.filters.price.replace('+', ''));
+            max = null;
+        } else {
+            [min, max] = state.filters.price.split('-').map(Number);
+        }
         if (max) {
             filtered = filtered.filter(car => car.price >= min && car.price <= max);
         } else {
@@ -632,7 +733,14 @@ function applyFilters() {
     
     // Procedencia
     if (state.filters.origin !== 'todos') {
-        filtered = filtered.filter(car => car.origin === state.filters.origin);
+        // Mapear valores del filtro a los valores de la base de datos
+        const originMap = {
+            'europa': ['italia', 'francia', 'alemania', 'reino-unido'],
+            'usa': ['usa'],
+            'asia': []
+        };
+        const allowedOrigins = originMap[state.filters.origin] || [];
+        filtered = filtered.filter(car => allowedOrigins.includes(car.origin));
     }
     
     state.filteredCars = filtered;
@@ -742,11 +850,12 @@ function updateCartCount() {
 }
 
 // Exportar funciones globales
-window.bypassAccess = bypassAccess;
 window.openCarModal = openCarModal;
 window.closeModal = closeModal;
 window.toggleCompareCar = toggleCompareCar;
+window.toggleFavorite = toggleFavorite;
 window.toggleCart = toggleCart;
+window.toggleFavorites = toggleFavorites;
 window.compareCars = compareCars;
 window.closeCompare = closeCompare;
 window.inquireCar = inquireCar;
