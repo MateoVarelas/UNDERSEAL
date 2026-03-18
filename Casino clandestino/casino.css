@@ -1,55 +1,55 @@
 /* ================================================
    UNDERDECK - Casino Clandestino Premium
-   Rediseño: UI/UX + Motion + Game UI
+   Rediseño: Minimalista Elegante - Blanco y Azul
    ================================================ */
 
 /* ---------- 1. VARIABLES ---------- */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-    /* Base */
-    --bg-base: #0B0E12;
-    --bg-surface: #0F141B;
-    --bg-panel: #121A22;
-    --bg-card: #151F2A;
-    --bg-hover: #1A2530;
+    /* Base - White & Light */
+    --bg-base: #F8FAFC;
+    --bg-surface: #FFFFFF;
+    --bg-panel: #F1F5F9;
+    --bg-card: #FFFFFF;
+    --bg-hover: #E2E8F0;
     
-    /* Text */
-    --text-primary: #E8EEF6;
-    --text-secondary: #B7C3D0;
-    --text-muted: #6B7A8A;
+    /* Text - Elegant Dark */
+    --text-primary: #1E293B;
+    --text-secondary: #475569;
+    --text-muted: #94A3B8;
     
-    /* Accents */
-    --accent-gold: #C9A227;
-    --accent-gold-dim: #8B7019;
-    --accent-red: #D64545;
-    --accent-red-bright: #E85555;
-    --accent-green-felt: #0E3B2E;
-    --accent-green-bright: #1A5F4A;
+    /* Accents - Blue */
+    --accent-blue: #2563EB;
+    --accent-blue-light: #3B82F6;
+    --accent-blue-dark: #1D4ED8;
+    --accent-blue-pale: #DBEAFE;
+    
+    /* Secondary */
+    --accent-silver: #64748B;
+    --accent-silver-light: #CBD5E1;
     
     /* Functional */
-    --success: #2ECC71;
-    --error: #E74C3C;
+    --success: #059669;
+    --error: #DC2626;
+    --gold: #F59E0B;
     
-    /* Shadows & Effects */
-    --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
-    --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
-    --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
-    --shadow-glow-gold: 0 0 20px rgba(201, 162, 39, 0.3);
-    --shadow-glow-red: 0 0 20px rgba(214, 69, 69, 0.3);
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+    --shadow-glow-blue: 0 0 20px rgba(37, 99, 235, 0.2);
     
     /* Transitions */
     --transition-fast: 150ms ease;
     --transition-normal: 250ms ease;
     --transition-slow: 400ms ease;
     
-    /* Layout */
-    --header-height: 70px;
     --border-radius: 8px;
     --border-radius-lg: 12px;
 }
 
-/* ---------- 2. RESET & BASE ---------- */
+/* ---------- 2. RESET ---------- */
 *, *::before, *::after {
     margin: 0;
     padding: 0;
@@ -59,7 +59,6 @@
 html {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -71,21 +70,107 @@ body {
     overflow-x: hidden;
 }
 
-/* Noise texture overlay */
-body::before {
-    content: '';
+/* Smoke & Effects */
+.smoke-overlay,
+.flicker-overlay,
+.surveillance-overlay {
+    display: none;
+}
+
+/* ---------- 3. ACCESS OVERLAY ---------- */
+.overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0.03;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%' height='100%' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 9999;
 }
 
-/* ---------- 3. LAYOUT ---------- */
+.overlay.hidden {
+    display: none;
+}
+
+.access-box {
+    background: var(--bg-surface);
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--accent-silver-light);
+}
+
+.access-header {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+    letter-spacing: 2px;
+}
+
+.blink {
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+}
+
+.access-box p {
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    font-size: 0.9rem;
+}
+
+.access-input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.access-input-group input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid var(--accent-silver-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color var(--transition-normal);
+}
+
+.access-input-group input:focus {
+    border-color: var(--accent-blue);
+}
+
+.btn-access {
+    padding: 12px 24px;
+    background: var(--accent-blue);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition-normal);
+}
+
+.btn-access:hover {
+    background: var(--accent-blue-dark);
+}
+
+.error-msg {
+    color: var(--error);
+    font-size: 0.85rem;
+    margin-top: 12px;
+    min-height: 20px;
+}
+
+/* ---------- 4. CASINO CONTAINER ---------- */
 .casino-container {
     max-width: 1400px;
     margin: 0 auto;
@@ -97,42 +182,34 @@ body::before {
     display: none;
 }
 
-/* ---------- 4. HEADER ---------- */
+/* ---------- 5. HEADER ---------- */
 .casino-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 24px;
-    background: var(--bg-panel);
-    border: 1px solid rgba(201, 162, 39, 0.15);
+    padding: 20px 32px;
+    background: var(--bg-surface);
+    border: 1px solid var(--accent-silver-light);
     border-radius: var(--border-radius-lg);
     margin-bottom: 24px;
-    box-shadow: var(--shadow-md);
-}
-
-.logo-section {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+    box-shadow: var(--shadow-sm);
 }
 
 .logo-section h1 {
-    font-family: 'Cinzel', serif;
-    font-size: 1.75rem;
-    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
     letter-spacing: 4px;
     display: flex;
     gap: 8px;
 }
 
 .logo-section h1 .under {
-    color: var(--accent-red);
-    text-shadow: 0 0 20px rgba(214, 69, 69, 0.4);
+    color: var(--accent-blue);
 }
 
 .logo-section h1 .deck {
-    color: var(--accent-gold);
-    text-shadow: 0 0 20px rgba(201, 162, 39, 0.4);
+    color: var(--text-primary);
 }
 
 .tagline {
@@ -140,6 +217,7 @@ body::before {
     color: var(--text-muted);
     font-style: italic;
     letter-spacing: 1px;
+    margin-top: 4px;
 }
 
 .user-panel {
@@ -148,27 +226,26 @@ body::before {
     gap: 20px;
 }
 
-/* Chip Display */
 .chip-display {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 10px 20px;
-    background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-card) 100%);
-    border: 1px solid rgba(201, 162, 39, 0.3);
+    padding: 12px 24px;
+    background: var(--bg-panel);
+    border: 1px solid var(--accent-silver-light);
     border-radius: var(--border-radius);
 }
 
 .chip-icon {
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-dim) 100%);
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
-    box-shadow: var(--shadow-glow-gold), inset 0 2px 4px rgba(255,255,255,0.3);
+    font-size: 1.2rem;
+    box-shadow: var(--shadow-glow-blue);
 }
 
 .chip-info {
@@ -177,10 +254,10 @@ body::before {
 }
 
 .chip-amount {
-    font-family: 'Cinzel', serif;
-    font-size: 1.4rem;
-    font-weight: 600;
-    color: var(--accent-gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-blue);
     line-height: 1;
 }
 
@@ -191,65 +268,56 @@ body::before {
     letter-spacing: 1px;
 }
 
-/* Reload Button */
 .btn-reload {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 18px;
+    padding: 12px 20px;
     background: transparent;
-    border: 1px solid var(--accent-gold);
-    color: var(--accent-gold);
+    border: 2px solid var(--accent-blue);
+    color: var(--accent-blue);
     font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.9rem;
+    font-weight: 600;
     border-radius: var(--border-radius);
     cursor: pointer;
     transition: all var(--transition-normal);
 }
 
 .btn-reload:hover {
-    background: var(--accent-gold);
-    color: var(--bg-base);
-    box-shadow: var(--shadow-glow-gold);
-}
-
-.btn-reload:active {
-    transform: scale(0.97);
+    background: var(--accent-blue);
+    color: white;
+    box-shadow: var(--shadow-glow-blue);
 }
 
 .btn-reload svg {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
 }
 
-/* ---------- 5. NAVIGATION ---------- */
+/* ---------- 6. NAVIGATION ---------- */
 .casino-nav {
     display: flex;
     gap: 8px;
     margin-bottom: 24px;
-    padding: 6px;
-    background: var(--bg-panel);
+    padding: 8px;
+    background: var(--bg-surface);
     border-radius: var(--border-radius-lg);
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid var(--accent-silver-light);
 }
 
 .nav-btn {
     flex: 1;
-    padding: 14px 20px;
+    padding: 16px 24px;
     background: transparent;
     border: none;
     color: var(--text-secondary);
     font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 500;
+    font-size: 0.9rem;
+    font-weight: 600;
     cursor: pointer;
     border-radius: var(--border-radius);
     transition: all var(--transition-normal);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
 }
 
 .nav-btn:hover {
@@ -258,12 +326,12 @@ body::before {
 }
 
 .nav-btn.active {
-    background: linear-gradient(135deg, var(--accent-gold) 0%, var(--accent-gold-dim) 100%);
-    color: var(--bg-base);
-    box-shadow: var(--shadow-glow-gold);
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+    color: white;
+    box-shadow: var(--shadow-glow-blue);
 }
 
-/* ---------- 6. SECTIONS ---------- */
+/* ---------- 7. SECTIONS ---------- */
 .casino-section {
     display: none;
     animation: fadeIn var(--transition-slow) ease;
@@ -278,25 +346,57 @@ body::before {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ---------- 7. ROULETTE SECTION ---------- */
+/* ---------- 8. ROULETTE SECTION ---------- */
 .roulette-section {
     display: grid;
-    grid-template-columns: 1fr 380px;
+    grid-template-columns: 1fr 400px;
     gap: 24px;
 }
 
-/* Left Column: Betting Table */
+/* Betting Table */
 .betting-table-wrapper {
-    background: var(--bg-panel);
+    background: var(--bg-surface);
     border-radius: var(--border-radius-lg);
     padding: 24px;
-    border: 1px solid rgba(255,255,255,0.05);
+    border: 1px solid var(--accent-silver-light);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+}
+
+.no-more-bets-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius-lg);
+    z-index: 10;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-normal);
+}
+
+.no-more-bets-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.no-more-bets-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    letter-spacing: 4px;
 }
 
 .betting-table-title {
-    font-family: 'Cinzel', serif;
-    font-size: 1.1rem;
-    color: var(--text-secondary);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--text-primary);
     margin-bottom: 20px;
     display: flex;
     align-items: center;
@@ -306,20 +406,18 @@ body::before {
 .betting-table-title::before {
     content: '';
     width: 4px;
-    height: 20px;
-    background: var(--accent-gold);
+    height: 24px;
+    background: var(--accent-blue);
     border-radius: 2px;
 }
 
-/* Roulette Table Grid */
+/* Roulette Table */
 .roulette-table {
-    background: linear-gradient(180deg, var(--accent-green-felt) 0%, #0A2E24 100%);
+    background: linear-gradient(180deg, #ECFDF5 0%, #D1FAE5 100%);
     border-radius: var(--border-radius-lg);
     padding: 16px;
-    box-shadow: 
-        inset 0 2px 10px rgba(0,0,0,0.5),
-        0 4px 20px rgba(0,0,0,0.3);
-    border: 3px solid #1A4A3A;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+    border: 3px solid #A7F3D0;
 }
 
 /* Zero Cell */
@@ -329,12 +427,12 @@ body::before {
 
 .zero-btn {
     width: 100%;
-    padding: 12px;
-    background: linear-gradient(180deg, #0E5E3E 0%, #0A4A30 100%);
-    border: 2px solid #0F6B47;
-    color: var(--success);
-    font-family: 'Cinzel', serif;
-    font-size: 1.2rem;
+    padding: 14px;
+    background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+    border: 2px solid #34D399;
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
     font-weight: 700;
     border-radius: 6px;
     cursor: pointer;
@@ -342,14 +440,13 @@ body::before {
 }
 
 .zero-btn:hover {
-    background: linear-gradient(180deg, #107550 0%, #0E5E3E 100%);
-    box-shadow: 0 0 15px rgba(46, 204, 113, 0.4);
+    background: linear-gradient(180deg, #34D399 0%, #10B981 100%);
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
 }
 
 .zero-btn.selected {
-    background: linear-gradient(180deg, #2ECC71 0%, #27AE60 100%);
-    color: var(--bg-base);
-    box-shadow: 0 0 20px rgba(46, 204, 113, 0.6);
+    background: #047857;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.6);
 }
 
 /* Number Grid */
@@ -373,44 +470,43 @@ body::before {
 }
 
 .num-btn {
-    padding: 10px 4px;
-    border: 1px solid rgba(0,0,0,0.3);
+    padding: 12px 4px;
+    border: 1px solid rgba(0,0,0,0.1);
     font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.85rem;
+    font-weight: 700;
     cursor: pointer;
     transition: all var(--transition-fast);
     border-radius: 4px;
 }
 
-/* Number Colors */
 .num-btn.red {
-    background: linear-gradient(180deg, #C0392B 0%, #8B2822 100%);
-    color: #fff;
-    border-color: #A93226;
+    background: linear-gradient(180deg, #EF4444 0%, #DC2626 100%);
+    color: white;
+    border-color: #EF4444;
 }
 
 .num-btn.black {
-    background: linear-gradient(180deg, #2C3E50 0%, #1A252F 100%);
-    color: #fff;
-    border-color: #1A252F;
+    background: linear-gradient(180deg, #374151 0%, #1F2937 100%);
+    color: white;
+    border-color: #374151;
 }
 
 .num-btn.green {
-    background: linear-gradient(180deg, #0E5E3E 0%, #0A4A30 100%);
-    color: var(--success);
-    border-color: #0F6B47;
+    background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+    color: white;
+    border-color: #10B981;
 }
 
 .num-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     z-index: 1;
 }
 
 .num-btn.selected {
     transform: translateY(-2px);
-    box-shadow: 0 0 0 3px var(--accent-gold), 0 4px 15px rgba(0,0,0,0.5);
+    box-shadow: 0 0 0 3px var(--accent-blue), 0 4px 15px rgba(0,0,0,0.2);
     z-index: 2;
 }
 
@@ -423,13 +519,13 @@ body::before {
 }
 
 .roulette-bet-btn.dozen {
-    padding: 12px;
-    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-surface) 100%);
-    border: 1px solid rgba(255,255,255,0.1);
+    padding: 14px;
+    background: var(--bg-surface);
+    border: 1px solid var(--accent-silver-light);
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
     font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     transition: all var(--transition-fast);
     border-radius: 4px;
@@ -441,24 +537,24 @@ body::before {
 
 .roulette-bet-btn.dozen .payout {
     font-size: 0.7rem;
-    color: var(--accent-gold);
-    font-weight: 600;
+    color: var(--accent-blue);
+    font-weight: 700;
 }
 
 .roulette-bet-btn.dozen:hover {
     background: var(--bg-hover);
-    border-color: var(--accent-gold);
+    border-color: var(--accent-blue);
 }
 
 .roulette-bet-btn.dozen.selected {
-    background: var(--accent-gold);
-    color: var(--bg-base);
-    border-color: var(--accent-gold);
-    box-shadow: var(--shadow-glow-gold);
+    background: var(--accent-blue);
+    color: white;
+    border-color: var(--accent-blue);
+    box-shadow: var(--shadow-glow-blue);
 }
 
 .roulette-bet-btn.dozen.selected .payout {
-    color: var(--bg-base);
+    color: white;
 }
 
 /* Columns */
@@ -466,12 +562,13 @@ body::before {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 6px;
+    margin-bottom: 6px;
 }
 
 .roulette-bet-btn.column {
-    padding: 10px;
-    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-surface) 100%);
-    border: 1px solid rgba(255,255,255,0.1);
+    padding: 12px;
+    background: var(--bg-surface);
+    border: 1px solid var(--accent-silver-light);
     color: var(--text-primary);
     cursor: pointer;
     transition: all var(--transition-fast);
@@ -485,37 +582,33 @@ body::before {
 
 .roulette-bet-btn.column:hover {
     background: var(--bg-hover);
-    border-color: var(--accent-gold);
+    border-color: var(--accent-blue);
 }
 
 .roulette-bet-btn.column.selected {
-    background: var(--accent-gold);
-    color: var(--bg-base);
-    box-shadow: var(--shadow-glow-gold);
+    background: var(--accent-blue);
+    color: white;
+    box-shadow: var(--shadow-glow-blue);
 }
 
 /* Outside Bets */
 .betting-area.outside-bets {
     display: flex;
     gap: 6px;
-    margin-top: 6px;
 }
 
 .bet-group {
-    flex: 1;
     display: flex;
     gap: 4px;
-}
-
-.bet-group.red-black {
-    flex: 0.8;
-}
-
-.roulette-bet-btn.half-bet {
     flex: 1;
-    padding: 14px 8px;
-    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-surface) 100%);
-    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.roulette-bet-btn.half-bet,
+.roulette-bet-btn.color-bet {
+    flex: 1;
+    padding: 12px 8px;
+    background: var(--bg-surface);
+    border: 1px solid var(--accent-silver-light);
     color: var(--text-primary);
     font-family: 'Inter', sans-serif;
     font-size: 0.75rem;
@@ -525,451 +618,57 @@ body::before {
     border-radius: 4px;
 }
 
-.roulette-bet-btn.half-bet:hover {
-    background: var(--bg-hover);
-    border-color: var(--accent-gold);
-}
-
-.roulette-bet-btn.half-bet.selected {
-    background: var(--accent-gold);
-    color: var(--bg-base);
-    box-shadow: var(--shadow-glow-gold);
-}
-
-.roulette-bet-btn.color-bet {
-    flex: 1;
-    padding: 14px;
-    border: 2px solid rgba(255,255,255,0.15);
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    border-radius: 4px;
-    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-surface) 100%);
-}
-
+.roulette-bet-btn.half-bet:hover,
 .roulette-bet-btn.color-bet:hover {
-    transform: translateY(-2px);
+    background: var(--bg-hover);
+    border-color: var(--accent-blue);
 }
 
-.roulette-bet-btn.color-bet.red-bet.selected {
-    background: var(--accent-red);
-    border-color: var(--accent-red-bright);
-    box-shadow: var(--shadow-glow-red);
+.roulette-bet-btn.half-bet.selected,
+.roulette-bet-btn.color-bet.selected {
+    background: var(--accent-blue);
+    color: white;
+    border-color: var(--accent-blue);
+    box-shadow: var(--shadow-glow-blue);
 }
 
-.roulette-bet-btn.color-bet.black-bet.selected {
-    background: #1A1A1A;
-    border-color: #333;
-    box-shadow: 0 0 15px rgba(255,255,255,0.2);
+.red-bet {
+    background: #FEE2E2;
+    border-color: #FCA5A5;
 }
 
-/* ---------- 8. WHEEL PANEL ---------- */
-.wheel-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+.red-bet.selected {
+    background: #EF4444;
 }
 
-/* Roulette Cabinet - Estilo casino profesional */
-.roulette-cabinet {
-    background: linear-gradient(180deg, #1a1a1a 0%, #0a0a0a 100%);
-    border: 3px solid #333;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 
-        0 15px 50px rgba(0,0,0,0.8),
-        inset 0 1px 0 rgba(255,255,255,0.1);
-    position: relative;
+.black-bet {
+    background: #E5E7EB;
+    border-color: #D1D5DB;
 }
 
-.roulette-sign {
-    background: linear-gradient(180deg, #222 0%, #111 100%);
-    border: 2px solid var(--accent-gold);
-    border-radius: 8px;
-    padding: 16px;
-    text-align: center;
-    margin-bottom: 24px;
-    position: relative;
-    overflow: hidden;
+.black-bet.selected {
+    background: #374151;
 }
 
-.roulette-sign::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
-}
-
-.roulette-sign .sign-text {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 900;
-    color: var(--accent-gold);
-    letter-spacing: 4px;
-    text-shadow: 0 0 15px rgba(201, 162, 39, 0.6);
-}
-
-/* Wheel */
-.roulette-wheel-area {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-}
-
-/* Roulette Wheel - Estilo profesional */
-.roulette-wheel {
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-    background: 
-        radial-gradient(circle at 35% 35%, #5a5a5a 0%, #2a2a2a 50%, #1a1a1a 100%);
-    border: 12px solid #555;
-    box-shadow: 
-        0 0 60px rgba(0,0,0,0.9),
-        inset 0 0 80px rgba(0,0,0,0.8),
-        0 0 20px rgba(0,0,0,0.5),
-        inset 0 0 30px rgba(255,255,255,0.05);
-    position: relative;
-    overflow: visible;
-}
-
-/* El spinner contiene los números y rota */
-.wheel-spinner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-}
-
-/* Números en la ruleta */
-.wheel-number {
-    position: absolute;
-    width: 26px;
-    height: 26px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 8px;
-    font-weight: 700;
-    /* Posicionamiento - se configura desde JS */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.wheel-number[data-n="0"] {
-    width: 34px;
-    height: 34px;
-    font-size: 10px;
-}
-
-.wheel-number[data-color="red"] {
-    background: linear-gradient(180deg, #c0392b 0%, #8b2822 100%);
-    color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-}
-
-.wheel-number[data-color="black"] {
-    background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%);
-    color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-}
-
-.wheel-number[data-color="green"] {
-    background: linear-gradient(180deg, #0e5e3e 0%, #0a4a30 100%);
-    color: #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-}
-
-/* Centro de la ruleta */
-.wheel-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 50%, #8b7023 100%);
-    border: 4px solid #ffd700;
-    box-shadow: 
-        0 0 20px rgba(255, 215, 0, 0.6),
-        inset 0 3px 6px rgba(255, 255, 255, 0.4);
-    z-index: 5;
-}
-
-/* Puntero - dentro de la ruleta para que no rote */
-.wheel-pointer {
-    position: absolute;
-    top: -14px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 14px solid transparent;
-    border-right: 14px solid transparent;
-    border-top: 24px solid var(--accent-gold);
-    filter: drop-shadow(0 3px 5px rgba(0,0,0,0.6));
-    z-index: 20;
-}
-
-/* Ball - DENTRO de la ruleta pero FUERA del spinner, no rota con la ruleta */
-.roulette-ball {
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    background: radial-gradient(circle at 35% 35%, #ffffff, #e0e0e0, #909090);
-    border-radius: 50%;
-    /* Posición inicial: arriba (fuera del centro) */
-    top: -5%;
-    left: 50%;
-    margin-left: -7px;
-    margin-top: -7px;
-    box-shadow: 
-        0 3px 6px rgba(0,0,0,0.5),
-        inset 0 -2px 4px rgba(0,0,0,0.3);
-    display: block;
-    z-index: 15;
-    pointer-events: none;
-}
-
-/* Ball spinning animation - clase para cuando está girando */
-.roulette-ball.spinning {
-    display: block;
-    animation: ballSpin 0.5s linear infinite;
-}
-
-@keyframes ballSpin {
-    0% {
-        transform: translate(-50%, -50%) rotate(0deg);
-    }
-    100% {
-        transform: translate(-50%, -50%) rotate(360deg);
-    }
-}
-
-/* Winner highlight animation */
-.wheel-number.winner {
-    animation: winnerPulse 0.5s ease-out 3;
-    box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.9) !important;
-}
-
-@keyframes winnerPulse {
-    0%, 100% {
-        transform: translate(-50%, -50%) scale(1);
-    }
-    50% {
-        transform: translate(-50%, -50%) scale(1.3);
-    }
-}
-
-.roulette-ball.spinning {
-    display: block;
-    animation: ballSpin 4s linear forwards;
-}
-
-/* Animación de bola girando alrededor de la ruleta */
-@keyframes ballSpin {
-    0% {
-        top: 0%;
-        left: 50%;
-    }
-    5% {
-        top: 3%;
-        left: 90%;
-    }
-    10% {
-        top: 10%;
-        left: 97%;
-    }
-    20% {
-        top: 35%;
-        left: 100%;
-    }
-    30% {
-        top: 65%;
-        left: 100%;
-    }
-    40% {
-        top: 90%;
-        left: 95%;
-    }
-    50% {
-        top: 100%;
-        left: 50%;
-    }
-    60% {
-        top: 90%;
-        left: 5%;
-    }
-    70% {
-        top: 65%;
-        left: 0%;
-    }
-    80% {
-        top: 35%;
-        left: 0%;
-    }
-    90% {
-        top: 10%;
-        left: 3%;
-    }
-    95% {
-        top: 3%;
-        left: 10%;
-    }
-    100% {
-        top: 0%;
-        left: 50%;
-    }
-}
-
-/* Winner animation */
-.wheel-number.winner {
-    animation: winnerPulse 0.6s ease-out 3;
-    z-index: 6;
-}
-
-@keyframes winnerPulse {
-    0%, 100% { 
-        transform: translate(-50%, -50%) scale(1); 
-    }
-    50% { 
-        transform: translate(-50%, -50%) scale(1.4); 
-    }
-}
-
-/* Result Display */
-.result-display {
-    background: #000;
-    border: 3px solid var(--accent-gold);
-    padding: 18px 50px;
-    text-align: center;
-    border-radius: 10px;
-    margin-top: 20px;
-    box-shadow: 
-        inset 0 0 30px rgba(0,0,0,0.9),
-        0 0 20px rgba(201, 162, 39, 0.3);
-}
-
-.result-label {
-    display: block;
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    margin-bottom: 6px;
-}
-
-#roulette-result-number {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 3rem;
-    font-weight: 900;
-    color: var(--accent-gold);
-    text-shadow: 0 0 25px rgba(201, 162, 39, 0.6);
-    transition: all 0.3s ease;
-}
-
-#roulette-result-number.red {
-    color: var(--accent-red);
-    text-shadow: 0 0 25px rgba(214, 69, 69, 0.6);
-}
-
-#roulette-result-number.black {
-    color: #555;
-    text-shadow: 0 0 15px rgba(255,255,255,0.2);
-}
-
-#roulette-result-number.green {
-    color: var(--success);
-    text-shadow: 0 0 25px rgba(46, 204, 113, 0.6);
-}
-
-/* Current Bet Display */
-.current-bet-display {
-    margin-top: 14px;
-    padding: 12px;
-    background: linear-gradient(180deg, #0f141b 0%, #0a0f14 100%);
-    border-radius: 8px;
-    text-align: center;
-    font-size: 0.9rem;
-    border: 1px solid rgba(201, 162, 39, 0.2);
-}
-
-#current-bet-type {
-    color: var(--accent-gold);
-    font-weight: 700;
-    font-size: 1rem;
-}
-
-#current-bet-amount {
-    color: var(--text-secondary);
-}
-
-/* Roulette Lights */
-.roulette-lights {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 18px;
-}
-
-.roulette-lights .light-bulb {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    animation: bulbBlink 1.2s infinite;
-}
-
-.roulette-lights .light-bulb.red { 
-    background: var(--accent-red); 
-    box-shadow: 0 0 12px var(--accent-red); 
-    animation-delay: 0s; 
-}
-
-.roulette-lights .light-bulb.green { 
-    background: var(--success); 
-    box-shadow: 0 0 12px var(--success); 
-    animation-delay: 0.6s; 
-}
-
-@keyframes bulbBlink {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.85); }
-}
-
-.roulette-lights.playing .light-bulb {
-    animation-duration: 0.12s;
-}
-
-/* ---------- 9. CONTROL PANEL ---------- */
+/* Control Panel */
 .control-panel {
-    background: var(--bg-panel);
-    border-radius: var(--border-radius-lg);
-    padding: 20px;
-    border: 1px solid rgba(255,255,255,0.05);
+    margin-top: 20px;
 }
 
-/* Bet Controls */
 .bet-controls {
     display: flex;
-    flex-direction: column;
+    align-items: center;
     gap: 16px;
+    padding: 16px;
+    background: var(--bg-panel);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--accent-silver-light);
 }
 
 .bet-input-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
 }
 
 .bet-input-group label {
@@ -982,82 +681,68 @@ body::before {
 .bet-adjuster {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: var(--bg-surface);
-    border-radius: var(--border-radius);
-    padding: 4px;
-    border: 1px solid rgba(255,255,255,0.08);
+    gap: 0;
 }
 
 .bet-adjuster button {
-    width: 40px;
+    width: 36px;
     height: 40px;
-    background: var(--bg-card);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: var(--bg-surface);
+    border: 1px solid var(--accent-silver-light);
     color: var(--text-primary);
     font-size: 1.2rem;
     cursor: pointer;
-    border-radius: 6px;
     transition: all var(--transition-fast);
 }
 
-.bet-adjuster button:hover {
-    background: var(--accent-gold);
-    color: var(--bg-base);
-    border-color: var(--accent-gold);
+.bet-adjuster button:first-child {
+    border-radius: 6px 0 0 6px;
 }
 
-.bet-adjuster button:active {
-    transform: scale(0.95);
+.bet-adjuster button:last-child {
+    border-radius: 0 6px 6px 0;
+}
+
+.bet-adjuster button:hover {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: white;
 }
 
 .bet-adjuster input {
-    flex: 1;
-    padding: 12px;
-    background: transparent;
-    border: none;
-    color: var(--accent-gold);
-    font-family: 'Cinzel', serif;
-    font-size: 1.3rem;
-    font-weight: 600;
+    width: 80px;
+    height: 40px;
+    border: 1px solid var(--accent-silver-light);
+    border-left: none;
+    border-right: none;
     text-align: center;
-    outline: none;
-}
-
-.bet-adjuster input:focus {
-    color: var(--text-primary);
-}
-
-/* Spin Button */
-.btn-spin {
-    width: 100%;
-    padding: 18px;
-    background: linear-gradient(180deg, var(--accent-red) 0%, #B53535 100%);
-    border: none;
-    border-radius: var(--border-radius);
-    color: white;
-    font-family: 'Cinzel', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: 600;
+    color: var(--accent-blue);
+}
+
+.btn-spin {
+    flex: 1;
+    padding: 16px 32px;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+    border: none;
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: var(--border-radius);
     cursor: pointer;
-    position: relative;
-    overflow: hidden;
     transition: all var(--transition-normal);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    box-shadow: 
-        0 4px 15px rgba(214, 69, 69, 0.4),
-        inset 0 1px 0 rgba(255,255,255,0.2);
+    box-shadow: var(--shadow-glow-blue);
 }
 
-.btn-spin:hover:not(:disabled) {
+.btn-spin:hover {
     transform: translateY(-2px);
-    box-shadow: 
-        0 6px 25px rgba(214, 69, 69, 0.5),
-        inset 0 1px 0 rgba(255,255,255,0.2);
+    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
 }
 
-.btn-spin:active:not(:disabled) {
+.btn-spin:active {
     transform: translateY(0);
 }
 
@@ -1067,328 +752,754 @@ body::before {
     transform: none;
 }
 
-/* Clear Bets Button */
 .btn-clear-bets {
-    width: 100%;
-    padding: 12px;
+    padding: 16px 24px;
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.15);
+    border: 1px solid var(--accent-silver);
     color: var(--text-secondary);
     font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 500;
-    cursor: pointer;
     border-radius: var(--border-radius);
+    cursor: pointer;
     transition: all var(--transition-normal);
 }
 
 .btn-clear-bets:hover {
     background: var(--bg-hover);
     border-color: var(--text-secondary);
-    color: var(--text-primary);
 }
 
-/* ---------- 10. NO MORE BETS OVERLAY ---------- */
-.no-more-bets-overlay {
+/* ---------- 9. ROULETTE WHEEL PANEL ---------- */
+.wheel-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.roulette-cabinet {
+    background: var(--bg-surface);
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
+    border: 1px solid var(--accent-silver-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.roulette-sign {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow-glow-blue);
+}
+
+.sign-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 3px;
+}
+
+.roulette-wheel-area {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.wheel-pointer {
+    width: 0;
+    height: 0;
+    border-left: 14px solid transparent;
+    border-right: 14px solid transparent;
+    border-top: 24px solid var(--accent-blue);
+    position: absolute;
+    top: -10px;
+    z-index: 10;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.roulette-wheel {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        #EF4444 0deg 30deg,
+        #1F2937 30deg 60deg,
+        #EF4444 60deg 90deg,
+        #1F2937 90deg 120deg,
+        #EF4444 120deg 150deg,
+        #1F2937 150deg 180deg,
+        #EF4444 180deg 210deg,
+        #1F2937 210deg 240deg,
+        #EF4444 240deg 270deg,
+        #1F2937 270deg 300deg,
+        #EF4444 300deg 330deg,
+        #1F2937 330deg 360deg
+    );
+    position: relative;
+    box-shadow: 
+        0 0 0 12px var(--accent-silver-light),
+        0 0 0 16px var(--bg-surface),
+        0 8px 32px rgba(0,0,0,0.15);
+    border: 4px solid var(--bg-surface);
+}
+
+.wheel-spinner {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+}
+
+.wheel-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-panel) 100%);
+    border-radius: 50%;
+    box-shadow: var(--shadow-md);
+}
+
+.roulette-ball {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: white;
+    border-radius: 50%;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    transition: none;
+}
+
+.roulette-lights {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.roulette-lights .light-bulb {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    animation: lightBlink 1s infinite alternate;
+}
+
+.roulette-lights .light-bulb.red {
+    background: #EF4444;
+    box-shadow: 0 0 10px #EF4444;
+}
+
+.roulette-lights .light-bulb.green {
+    background: #10B981;
+    box-shadow: 0 0 10px #10B981;
+    animation-delay: 0.5s;
+}
+
+@keyframes lightBlink {
+    from { opacity: 0.5; }
+    to { opacity: 1; }
+}
+
+.result-display {
+    text-align: center;
+    padding: 16px;
+    background: var(--bg-panel);
+    border-radius: var(--border-radius);
+    margin-bottom: 12px;
+}
+
+.result-label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.result-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    line-height: 1;
+}
+
+.current-bet-display {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+#current-bet-type {
+    color: var(--accent-blue);
+    font-weight: 600;
+}
+
+#current-bet-amount {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* Game History */
+.game-history {
+    background: var(--bg-surface);
+    border-radius: var(--border-radius-lg);
+    padding: 20px;
+    border: 1px solid var(--accent-silver-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.game-history h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.history-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 40px;
+}
+
+.history-num {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+}
+
+.history-num.red { background: #EF4444; }
+.history-num.black { background: #374151; }
+.history-num.green { background: #10B981; }
+
+/* ---------- 10. SLOTS SECTION ---------- */
+.slots-section {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 24px;
+}
+
+.slots-machine {
+    background: var(--bg-surface);
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
+    border: 1px solid var(--accent-silver-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.slots-cabinet {
+    position: relative;
+}
+
+.slots-crown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.crown-ornament {
+    width: 40px;
+    height: 20px;
+    background: var(--accent-blue);
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+.slots-sign {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+    padding: 12px 32px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-glow-blue);
+}
+
+.slots-display {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.slot-frame {
+    position: relative;
+    background: var(--bg-panel);
+    border-radius: 12px;
+    padding: 16px;
+    border: 3px solid var(--accent-silver-light);
+}
+
+.slot-glass {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(4px);
+    background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 30%, transparent 70%, rgba(255,255,255,0.2) 100%);
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.slots-reels {
+    display: flex;
+    gap: 8px;
+}
+
+.slot-reel {
+    width: 80px;
+    height: 100px;
+    background: linear-gradient(180deg, #F8FAFC 0%, #E2E8F0 100%);
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 100;
-    opacity: 0;
-    visibility: hidden;
-    transition: all var(--transition-normal);
-    border-radius: var(--border-radius-lg);
+    font-size: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--accent-silver-light);
 }
 
-.no-more-bets-overlay.active {
-    opacity: 1;
-    visibility: visible;
+.reel-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 20px;
+    pointer-events: none;
 }
 
-.no-more-bets-text {
-    font-family: 'Cinzel', serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: var(--accent-red);
-    text-transform: uppercase;
-    letter-spacing: 6px;
-    text-shadow: 0 0 30px rgba(214, 69, 69, 0.6);
-    animation: pulseText 1s ease-in-out infinite;
+.reel-overlay.top {
+    top: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.8) 0%, transparent 100%);
 }
 
-@keyframes pulseText {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.8; transform: scale(1.02); }
+.reel-overlay.bottom {
+    bottom: 0;
+    background: linear-gradient(0deg, rgba(255,255,255,0.8) 0%, transparent 100%);
 }
 
-/* ---------- 11. GAME HISTORY ---------- */
-.game-history {
-    margin-top: 20px;
-    padding: 16px;
+.slots-payline {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: 50%;
+    height: 3px;
+    background: var(--accent-blue);
+    transform: translateY(-50%);
+    box-shadow: 0 0 10px var(--accent-blue);
+}
+
+/* Prize Area */
+.slots-prize-area {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.slots-jackpot-display,
+.slots-multiplier-display {
     background: var(--bg-panel);
-    border-radius: var(--border-radius-lg);
-    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: var(--border-radius);
+    padding: 12px;
+    text-align: center;
+    border: 1px solid var(--accent-silver-light);
 }
 
-.game-history h4 {
-    font-family: 'Cinzel', serif;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    margin-bottom: 12px;
-    letter-spacing: 2px;
-}
-
-.history-list {
+.prize-box,
+.multiplier-box {
     display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    min-height: 32px;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.history-item {
-    padding: 6px 12px;
+.prize-label,
+.multiplier-label {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.prize-value,
+.multiplier-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+}
+
+.prize-value.jackpot {
+    color: var(--gold);
+}
+
+/* Slots Controls */
+.slots-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+}
+
+.bet-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 300px;
+}
+
+.bet-input label {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+}
+
+.input-wrapper button {
+    width: 40px;
+    height: 40px;
     background: var(--bg-surface);
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid var(--accent-silver-light);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    cursor: pointer;
     transition: all var(--transition-fast);
 }
 
-.history-item.win {
-    border-color: var(--success);
-    color: var(--success);
-    box-shadow: 0 0 10px rgba(46, 204, 113, 0.2);
+.input-wrapper button:first-child {
+    border-radius: 6px 0 0 6px;
 }
 
-.history-item.lose {
-    border-color: var(--accent-red);
-    color: var(--accent-red);
-    box-shadow: 0 0 10px rgba(214, 69, 69, 0.2);
+.input-wrapper button:last-child {
+    border-radius: 0 6px 6px 0;
 }
 
-/* ---------- 12. SOUND TOGGLE ---------- */
-.sound-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 48px;
-    height: 48px;
-    background: var(--bg-panel);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 1000;
-    transition: all var(--transition-normal);
-    color: var(--text-secondary);
+.input-wrapper button:hover {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: white;
 }
 
-.sound-toggle:hover {
-    background: var(--bg-hover);
-    border-color: var(--accent-gold);
-    color: var(--accent-gold);
-}
-
-.sound-toggle.muted {
-    color: var(--accent-red);
-}
-
-.sound-toggle svg {
-    width: 22px;
-    height: 22px;
-}
-
-/* ---------- 13. TOAST MESSAGES ---------- */
-.toast {
-    position: fixed;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    padding: 14px 28px;
-    background: var(--bg-panel);
-    border: 1px solid var(--accent-gold);
-    border-radius: var(--border-radius);
-    color: var(--text-primary);
-    font-size: 0.9rem;
-    font-weight: 500;
-    box-shadow: var(--shadow-lg);
-    z-index: 1001;
-    opacity: 0;
-    visibility: hidden;
-    transition: all var(--transition-normal);
-}
-
-.toast.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0);
-}
-
-.toast.error {
-    border-color: var(--accent-red);
-    color: var(--accent-red);
-}
-
-.toast.success {
-    border-color: var(--success);
-    color: var(--success);
-}
-
-/* ---------- 14. ACCESS OVERLAY ---------- */
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-    backdrop-filter: blur(10px);
-}
-
-.overlay.hidden {
-    display: none;
-}
-
-.access-box {
-    background: var(--bg-panel);
-    border: 2px solid var(--accent-red);
-    padding: 40px;
+.input-wrapper input {
+    width: 100px;
+    height: 40px;
+    border: 1px solid var(--accent-silver-light);
+    border-left: none;
+    border-right: none;
     text-align: center;
-    max-width: 420px;
-    border-radius: var(--border-radius-lg);
-    box-shadow: 
-        0 0 40px rgba(214, 69, 69, 0.3),
-        inset 0 0 40px rgba(214, 69, 69, 0.1);
-    animation: pulseBorder 2s infinite;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--accent-blue);
 }
 
-@keyframes pulseBorder {
-    0%, 100% { box-shadow: 0 0 40px rgba(214, 69, 69, 0.3); }
-    50% { box-shadow: 0 0 60px rgba(214, 69, 69, 0.5); }
-}
-
-.access-header {
-    font-family: 'Cinzel', serif;
-    font-size: 1.4rem;
-    color: var(--accent-red);
-    margin-bottom: 16px;
-    letter-spacing: 3px;
+.btn-spin.btn-text {
+    padding: 16px 48px;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: var(--shadow-glow-blue);
     display: flex;
     align-items: center;
+    gap: 8px;
+}
+
+.btn-spin.btn-text:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+}
+
+.btn-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: 50px;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+    filter: blur(10px);
+    opacity: 0.5;
+    z-index: -1;
+}
+
+/* Slots Lights */
+.slots-lights {
+    margin-top: 16px;
+}
+
+.light-string {
+    display: flex;
     justify-content: center;
     gap: 12px;
 }
 
-.blink {
-    animation: blink 1s infinite;
+.light-string .light-bulb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    animation: lightBlink 0.5s infinite alternate;
 }
 
-@keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0.3; }
-}
+.light-string .light-bulb.red { background: #EF4444; box-shadow: 0 0 10px #EF4444; }
+.light-string .light-bulb.yellow { background: #F59E0B; box-shadow: 0 0 10px #F59E0B; animation-delay: 0.2s; }
+.light-string .light-bulb.green { background: #10B981; box-shadow: 0 0 10px #10B981; animation-delay: 0.4s; }
+.light-string .light-bulb.blue { background: #3B82F6; box-shadow: 0 0 10px #3B82F6; animation-delay: 0.6s; }
 
-.access-box p {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    margin-bottom: 24px;
-}
-
-.access-input-group {
-    display: flex;
-    gap: 10px;
-}
-
-#access-code {
-    flex: 1;
-    padding: 14px 18px;
+/* Slots Paytable */
+.slots-paytable {
     background: var(--bg-surface);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: var(--accent-gold);
-    font-family: 'Cinzel', serif;
-    font-size: 1.1rem;
-    text-align: center;
-    border-radius: var(--border-radius);
-    outline: none;
-    transition: all var(--transition-normal);
+    border-radius: var(--border-radius-lg);
+    padding: 20px;
+    border: 1px solid var(--accent-silver-light);
+    box-shadow: var(--shadow-sm);
 }
 
-#access-code:focus {
-    border-color: var(--accent-gold);
-    box-shadow: 0 0 15px rgba(201, 162, 39, 0.2);
+.slots-paytable h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
 }
 
-#access-code::placeholder {
+.paytable-section {
+    margin-bottom: 16px;
+}
+
+.paytable-section h5 {
+    font-size: 0.8rem;
     color: var(--text-muted);
-    font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
-}
-
-.btn-access {
-    padding: 14px 24px;
-    background: var(--accent-red);
-    border: none;
-    color: white;
-    font-family: 'Cinzel', serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: var(--border-radius);
-    transition: all var(--transition-normal);
+    margin-bottom: 8px;
+    text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-.btn-access:hover {
-    background: var(--accent-red-bright);
-    box-shadow: 0 0 20px rgba(214, 69, 69, 0.4);
+.paytable-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--bg-panel);
 }
 
-.error-msg {
-    color: var(--accent-red);
-    margin-top: 16px;
-    font-size: 0.85rem;
-    min-height: 20px;
+.paytable-row:last-child {
+    border-bottom: none;
 }
 
-/* ---------- 15. RESPONSIVE ---------- */
+.paytable-row span:first-child {
+    font-size: 1.2rem;
+}
+
+.paytable-row .payout {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: var(--accent-blue);
+}
+
+/* ---------- 11. REWARDS SECTION ---------- */
+.rewards-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.rewards-status {
+    background: var(--bg-surface);
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
+    border: 1px solid var(--accent-silver-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.rewards-status h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.progress-bar {
+    height: 24px;
+    background: var(--bg-panel);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    border: 1px solid var(--accent-silver-light);
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-blue-light) 100%);
+    border-radius: 12px;
+    transition: width var(--transition-slow);
+}
+
+.rewards-status p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.rewards-status span {
+    color: var(--accent-blue);
+    font-weight: 600;
+}
+
+.rewards-unlocked {
+    background: var(--bg-surface);
+    border-radius: var(--border-radius-lg);
+    padding: 24px;
+    border: 1px solid var(--accent-silver-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.rewards-unlocked h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.rewards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.reward-card {
+    background: var(--bg-panel);
+    border-radius: var(--border-radius);
+    padding: 16px;
+    text-align: center;
+    border: 1px solid var(--accent-silver-light);
+    transition: all var(--transition-normal);
+}
+
+.reward-card.locked {
+    opacity: 0.6;
+}
+
+.reward-card.unlocked {
+    border-color: var(--accent-blue);
+    box-shadow: var(--shadow-glow-blue);
+}
+
+.reward-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.reward-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.reward-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.reward-req {
+    font-size: 0.7rem;
+    color: var(--accent-blue);
+    font-weight: 600;
+}
+
+/* ---------- 12. RULES SECTION ---------- */
+.rules-section {
+    background: var(--bg-surface);
+    border-radius: var(--border-radius-lg);
+    padding: 32px;
+    border: 1px solid var(--accent-silver-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.rules-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rules-section h2::before {
+    content: '';
+    width: 4px;
+    height: 28px;
+    background: var(--accent-blue);
+    border-radius: 2px;
+}
+
+.rule-block {
+    margin-bottom: 24px;
+}
+
+.rule-block h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent-blue);
+    margin-bottom: 12px;
+}
+
+.rule-block p,
+.rule-block ul {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+.rule-block ul {
+    padding-left: 20px;
+}
+
+.rule-block li {
+    margin-bottom: 8px;
+}
+
+/* ---------- 13. RESPONSIVE ---------- */
 @media (max-width: 1024px) {
-    .roulette-section {
+    .roulette-section,
+    .slots-section,
+    .rewards-container {
         grid-template-columns: 1fr;
     }
     
     .wheel-panel {
         order: -1;
-    }
-    
-    .roulette-wheel {
-        width: 240px;
-        height: 240px;
-    }
-    
-    .wheel-number {
-        width: 22px;
-        height: 22px;
-        font-size: 7px;
-        transform: translate(-50%, -50%) rotate(var(--num-angle, 0deg)) translateY(-85px) rotate(calc(-1 * var(--num-angle, 0deg)));
-    }
-    
-    .wheel-center {
-        width: 46px;
-        height: 46px;
     }
 }
 
@@ -1402,6 +1513,7 @@ body::before {
     .user-panel {
         width: 100%;
         justify-content: center;
+        flex-wrap: wrap;
     }
     
     .casino-nav {
@@ -1413,7 +1525,7 @@ body::before {
     }
     
     .roulette-table {
-        padding: 10px;
+        padding: 12px;
     }
     
     .num-btn {
@@ -1421,798 +1533,11 @@ body::before {
         font-size: 0.7rem;
     }
     
-    .bet-group {
-        flex-wrap: wrap;
-    }
-    
-    .roulette-bet-btn.half-bet {
-        padding: 10px 4px;
-        font-size: 0.65rem;
-    }
-    
-    .access-box {
-        margin: 20px;
-        padding: 24px;
-    }
-    
-    .access-input-group {
+    .bet-controls {
         flex-direction: column;
     }
     
-    .btn-access {
-        width: 100%;
+    .rewards-grid {
+        grid-template-columns: 1fr;
     }
-}
-
-@media (max-width: 480px) {
-    .logo-section h1 {
-        font-size: 1.4rem;
-    }
-    
-    .chip-display {
-        padding: 8px 14px;
-    }
-    
-    .chip-amount {
-        font-size: 1.2rem;
-    }
-    
-    .btn-reload {
-        padding: 8px 12px;
-        font-size: 0.75rem;
-    }
-    
-    .number-row {
-        grid-template-columns: repeat(6, 1fr);
-    }
-    
-    .betting-area.dozens {
-        grid-template-columns: repeat(3, 1fr);
-    }
-    
-    .betting-area.outside-bets {
-        flex-direction: column;
-    }
-    
-    .bet-group {
-        width: 100%;
-    }
-}
-
-/* ---------- 16. ANIMATIONS ---------- */
-/* Hover elevation */
-.btn-reload, .nav-btn, .roulette-bet-btn, .num-btn, .btn-spin {
-    will-change: transform, box-shadow;
-}
-
-/* Press feedback */
-.btn-reload:active, .btn-spin:active {
-    transform: scale(0.97);
-}
-
-/* Smooth transitions for all interactive elements */
-button, input {
-    transition: all var(--transition-fast);
-}
-
-/* Wheel spinning animation enhancement */
-.roulette-wheel.spinning .wheel-spinner {
-    animation: wheelSpin 4s cubic-bezier(0.15, 0.9, 0.2, 1) forwards;
-}
-
-@keyframes wheelSpin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(var(--wheel-rotation, 1440deg)); }
-}
-
-/* Winner highlight */
-.wheel-number.winner {
-    animation: winnerHighlight 0.8s ease-out 3;
-}
-
-@keyframes winnerHighlight {
-    0%, 100% { 
-        transform: translate(-50%, -50%) scale(1); 
-        filter: brightness(1);
-    }
-    50% { 
-        transform: translate(-50%, -50%) scale(1.3); 
-        filter: brightness(1.5);
-    }
-}
-
-/* Lights animation */
-.roulette-lights {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 12px;
-}
-
-.roulette-lights .light-bulb {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    animation: bulbBlink 1s infinite;
-}
-
-.roulette-lights .light-bulb.red { 
-    background: var(--accent-red); 
-    box-shadow: 0 0 10px var(--accent-red); 
-    animation-delay: 0s; 
-}
-
-.roulette-lights .light-bulb.green { 
-    background: var(--success); 
-    box-shadow: 0 0 10px var(--success); 
-    animation-delay: 0.5s; 
-}
-
-@keyframes bulbBlink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-}
-
-.roulette-lights.playing .light-bulb {
-    animation-duration: 0.15s;
-}
-
-/* ---------- 17. SLOTS STYLES (Restored) ---------- */
-.slots-section {
-    display: none;
-}
-
-.slots-section.active {
-    display: block;
-}
-
-.slots-machine {
-    display: flex;
-    gap: 30px;
-    justify-content: center;
-    align-items: flex-start;
-    flex-wrap: wrap;
-}
-
-.slots-cabinet {
-    background: linear-gradient(180deg, #0d0d0d 0%, #000 50%, #0a0a0a 100%);
-    border: 4px solid #1a1a1a;
-    border-radius: 20px;
-    padding: 0;
-    position: relative;
-    box-shadow: 
-        0 20px 60px rgba(0,0,0,0.9),
-        inset 0 1px 0 rgba(255,255,255,0.05),
-        0 0 0 2px #000,
-        0 0 30px rgba(255, 7, 58, 0.1);
-    overflow: hidden;
-}
-
-/* Crown/Header */
-.slots-crown {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
-    padding: 15px 20px 0;
-    position: relative;
-}
-
-.crown-ornament {
-    width: 30px;
-    height: 30px;
-    background: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
-    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
-
-.crown-ornament.left { transform: rotate(-45deg); }
-.crown-ornament.right { transform: rotate(45deg); }
-
-.slots-sign {
-    background: linear-gradient(180deg, #111 0%, #000 100%);
-    border: 3px solid var(--accent-red);
-    border-radius: 10px 10px 0 0;
-    padding: 15px 30px;
-    text-align: center;
-    margin: 0 10px;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 
-        0 0 20px rgba(255, 7, 58, 0.3),
-        inset 0 0 30px rgba(255, 7, 58, 0.1);
-}
-
-.sign-text {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.6rem;
-    font-weight: 900;
-    color: var(--accent-gold);
-    text-shadow: 0 0 10px var(--accent-gold), 0 0 20px var(--accent-gold), 0 0 30px var(--accent-red);
-    letter-spacing: 3px;
-    animation: signGlow 1.5s infinite alternate;
-}
-
-@keyframes signGlow {
-    0% { text-shadow: 0 0 10px var(--accent-gold), 0 0 20px var(--accent-gold); }
-    100% { text-shadow: 0 0 20px var(--accent-gold), 0 0 40px var(--accent-gold), 0 0 60px var(--accent-red); }
-}
-
-.sign-bulbs {
-    position: absolute;
-    bottom: 5px;
-    left: 0;
-    right: 0;
-    height: 8px;
-    background: repeating-linear-gradient(
-        90deg,
-        var(--accent-red) 0px,
-        var(--accent-red) 6px,
-        transparent 6px,
-        transparent 12px
-    );
-    animation: bulbsFlash 0.4s infinite;
-}
-
-@keyframes bulbsFlash {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-}
-
-/* Main Display */
-.slots-display {
-    padding: 20px;
-    background: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
-}
-
-.slot-frame {
-    background: #000;
-    border: 4px solid #222;
-    border-radius: 12px;
-    padding: 12px;
-    position: relative;
-    box-shadow: 
-        inset 0 0 50px rgba(0,0,0,0.9),
-        0 0 20px rgba(0,0,0,0.5);
-}
-
-.slot-glass {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(
-        180deg,
-        rgba(255,255,255,0.08) 0%,
-        transparent 20%,
-        transparent 80%,
-        rgba(255,255,255,0.03) 100%
-    );
-    border-radius: 10px;
-    pointer-events: none;
-    z-index: 10;
-}
-
-.slots-reels {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-.slot-reel {
-    width: 70px;
-    height: 100px;
-    background: linear-gradient(180deg, #f8f8f8 0%, #e8e8e8 30%, #d0d0d0 50%, #e8e8e8 70%, #f8f8f8 100%);
-    border: 3px solid #888;
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 
-        inset 0 0 15px rgba(0,0,0,0.3),
-        0 2px 4px rgba(0,0,0,0.5);
-}
-
-.reel-overlay {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 20px;
-    background: linear-gradient(180deg, #000 0%, transparent 100%);
-    z-index: 5;
-    pointer-events: none;
-}
-
-.reel-overlay.top { top: 0; }
-.reel-overlay.bottom {
-    bottom: 0;
-    background: linear-gradient(0deg, #000 0%, transparent 100%);
-}
-
-.reel-strip {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2.5rem;
-    height: 100%;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    transition: transform 0.1s;
-}
-
-.slot-reel.spinning .reel-strip {
-    animation: reelSpin 0.1s infinite;
-}
-
-@keyframes reelSpin {
-    0% { transform: translateY(-2px); }
-    50% { transform: translateY(2px); }
-    100% { transform: translateY(-2px); }
-}
-
-.slot-reel.winner {
-    animation: winnerGlow 0.5s ease-in-out infinite alternate;
-    border-color: var(--accent-gold);
-    box-shadow: 
-        inset 0 0 15px rgba(0,0,0,0.3),
-        0 0 20px var(--accent-gold),
-        0 0 40px rgba(255, 215, 0, 0.5);
-}
-
-@keyframes winnerGlow {
-    0% { box-shadow: 0 0 20px var(--accent-gold), 0 0 40px rgba(255, 215, 0, 0.3); }
-    100% { box-shadow: 0 0 30px var(--accent-gold), 0 0 60px rgba(255, 215, 0, 0.6); }
-}
-
-.slots-payline {
-    position: absolute;
-    left: 15px;
-    right: 15px;
-    top: 50%;
-    height: 4px;
-    background: linear-gradient(90deg, transparent 0%, var(--accent-red) 20%, var(--accent-red) 80%, transparent 100%);
-    transform: translateY(-50%);
-    z-index: 8;
-    box-shadow: 0 0 10px var(--accent-red);
-}
-
-/* Prize Area */
-.slots-prize-area {
-    display: flex;
-    gap: 10px;
-    padding: 0 20px;
-    margin-top: 10px;
-}
-
-.slots-jackpot-display, .slots-multiplier-display {
-    flex: 1;
-    padding: 10px;
-    background: #000;
-    border: 2px solid var(--accent-gold);
-    text-align: center;
-    border-radius: 8px;
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
-}
-
-.slots-jackpot-display.jackpot-box {
-    border-color: var(--accent-red);
-    box-shadow: 0 0 15px rgba(255, 7, 58, 0.3);
-}
-
-.jackpot-value {
-    color: var(--accent-red) !important;
-    text-shadow: 0 0 10px var(--accent-red) !important;
-}
-
-.prize-box, .multiplier-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.prize-label, .multiplier-label {
-    color: var(--text-muted);
-    font-size: 0.65rem;
-    letter-spacing: 2px;
-    margin-bottom: 5px;
-}
-
-.prize-value, .multiplier-value {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--accent-gold);
-    text-shadow: 0 0 10px var(--accent-gold);
-}
-
-.multiplier-value {
-    color: var(--accent-cyan);
-    text-shadow: 0 0 10px var(--accent-cyan);
-}
-
-.multiplier-value.pulse {
-    animation: multiplierPulse 0.5s ease-out;
-}
-
-@keyframes multiplierPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.3); color: var(--accent-red); }
-    100% { transform: scale(1); }
-}
-
-/* Controls */
-.slots-controls {
-    padding: 20px;
-    background: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
-}
-
-.control-row {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.bet-input.full-width {
-    width: 100%;
-}
-
-.bet-input .centered {
-    justify-content: center;
-}
-
-.bet-input, .lines-selector {
-    flex: 1;
-}
-
-.bet-input label, .lines-selector label {
-    display: block;
-    color: var(--text-muted);
-    font-size: 0.7rem;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-}
-
-.input-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.bet-btn-small {
-    width: 30px;
-    height: 30px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-    font-size: 1.2rem;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: all 0.2s;
-}
-
-.bet-btn-small:hover {
-    background: var(--accent-green);
-    color: #000;
-}
-
-.bet-input input, .lines-selector select {
-    flex: 1;
-    padding: 10px;
-    background: #000;
-    border: 1px solid var(--border-color);
-    color: var(--accent-gold);
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1rem;
-    text-align: center;
-    border-radius: 5px;
-}
-
-.lines-selector select {
-    width: 100%;
-    cursor: pointer;
-}
-
-.btn-spin {
-    width: 100%;
-    padding: 18px;
-    background: linear-gradient(180deg, var(--accent-red) 0%, #cc0030 100%);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    box-shadow: 
-        0 4px 15px rgba(255, 7, 58, 0.4),
-        inset 0 1px 0 rgba(255,255,255,0.2);
-}
-
-.btn-spin:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 
-        0 6px 25px rgba(255, 7, 58, 0.6),
-        inset 0 1px 0 rgba(255,255,255,0.2);
-}
-
-.btn-spin:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-.btn-text {
-    position: relative;
-    z-index: 1;
-}
-
-.btn-glow {
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    animation: btnShine 2s infinite;
-}
-
-@keyframes btnShine {
-    0% { left: -100%; }
-    50%, 100% { left: 100%; }
-}
-
-/* Lights */
-.slots-lights {
-    padding: 15px 20px;
-    background: #050505;
-    border-top: 1px solid #1a1a1a;
-}
-
-.light-string {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
-
-.light-bulb {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    animation: bulbBlink 0.5s infinite;
-}
-
-.light-bulb.red { background: var(--accent-red); box-shadow: 0 0 10px var(--accent-red); animation-delay: 0s; }
-.light-bulb.yellow { background: #ffd700; box-shadow: 0 0 10px #ffd700; animation-delay: 0.1s; }
-.light-bulb.green { background: var(--accent-green); box-shadow: 0 0 10px var(--accent-green); animation-delay: 0.2s; }
-.light-bulb.blue { background: var(--accent-cyan); box-shadow: 0 0 10px var(--accent-cyan); animation-delay: 0.3s; }
-
-@keyframes bulbBlink {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(0.9); }
-}
-
-.slots-lights.playing .light-bulb {
-    animation: bulbBlink 0.15s infinite;
-}
-
-/* Paytable */
-.slots-paytable {
-    background: linear-gradient(180deg, #111 0%, #0a0a0a 100%);
-    border: 2px solid #222;
-    border-radius: 15px;
-    padding: 20px;
-    min-width: 280px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-}
-
-.slots-paytable h4 {
-    font-family: 'Orbitron', sans-serif;
-    color: var(--accent-cyan);
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.1rem;
-    letter-spacing: 2px;
-    text-shadow: 0 0 10px var(--accent-cyan);
-}
-
-.paytable-section {
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #222;
-}
-
-.paytable-section:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-
-.paytable-section h5 {
-    color: var(--text-muted);
-    font-size: 0.7rem;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-}
-
-.paytable-section.bonus h5 {
-    color: var(--accent-red);
-}
-
-.paytable-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 10px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 5px;
-    margin-bottom: 5px;
-    font-size: 0.9rem;
-}
-
-.paytable-row.premium {
-    background: linear-gradient(90deg, rgba(255, 215, 0, 0.1) 0%, transparent 100%);
-    border: 1px solid rgba(255, 215, 0, 0.3);
-}
-
-.paytable-row .payout {
-    font-family: 'Orbitron', sans-serif;
-    color: var(--accent-gold);
-    font-weight: 700;
-}
-
-/* ---------- 18. REWARDS & RULES SECTIONS ---------- */
-.rewards-section, .rules-section {
-    display: none;
-}
-
-.rewards-section.active, .rules-section.active {
-    display: block;
-}
-
-.rewards-container {
-    background: var(--bg-panel);
-    border-radius: var(--border-radius-lg);
-    padding: 30px;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.rewards-status h3, .rewards-unlocked h3 {
-    font-family: 'Cinzel', serif;
-    color: var(--text-secondary);
-    margin-bottom: 20px;
-}
-
-.progress-bar {
-    height: 8px;
-    background: var(--bg-surface);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 10px;
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent-gold-dim), var(--accent-gold));
-    border-radius: 4px;
-    transition: width var(--transition-slow);
-}
-
-.rewards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-top: 20px;
-}
-
-.reward-card {
-    background: var(--bg-surface);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: var(--border-radius);
-    padding: 20px;
-    text-align: center;
-    transition: all var(--transition-normal);
-}
-
-.reward-card.locked {
-    opacity: 0.5;
-}
-
-.reward-card.unlocked {
-    border-color: var(--accent-gold);
-    box-shadow: var(--shadow-glow-gold);
-}
-
-.reward-icon {
-    font-size: 2.5rem;
-    margin-bottom: 10px;
-}
-
-.reward-name {
-    font-family: 'Cinzel', serif;
-    font-size: 1rem;
-    color: var(--text-primary);
-    margin-bottom: 8px;
-}
-
-.reward-desc {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-}
-
-.reward-req {
-    font-size: 0.75rem;
-    color: var(--accent-gold);
-}
-
-/* Rules */
-.rules-content {
-    background: var(--bg-panel);
-    border-radius: var(--border-radius-lg);
-    padding: 30px;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.rules-content h3 {
-    font-family: 'Cinzel', serif;
-    color: var(--accent-gold);
-    margin-bottom: 24px;
-    font-size: 1.3rem;
-}
-
-.rule-block {
-    margin-bottom: 24px;
-}
-
-.rule-block h4 {
-    font-family: 'Cinzel', serif;
-    color: var(--text-secondary);
-    margin-bottom: 12px;
-    font-size: 1rem;
-}
-
-.rule-block ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-.rule-block li {
-    padding: 8px 0;
-    color: var(--text-muted);
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    font-size: 0.9rem;
-}
-
-.rule-block li::before {
-    content: '→';
-    color: var(--accent-gold);
-    margin-right: 10px;
-}
-
-.rule-warning {
-    margin-top: 30px;
-    padding: 16px;
-    background: rgba(214, 69, 69, 0.1);
-    border: 1px solid var(--accent-red);
-    border-radius: var(--border-radius);
-    text-align: center;
-}
-
-.rule-warning p {
-    color: var(--accent-red);
-    font-size: 0.85rem;
-    margin: 4px 0;
-}
-
-/* Hide original elements */
-.casino-body .smoke-overlay,
-.casino-body .flicker-overlay,
-.casino-body .surveillance-overlay {
-    display: none;
-}
-
-.hidden {
-    display: none !important;
 }

@@ -517,319 +517,220 @@ function setupEventListeners() {
 }
 
 // ============================================
-// TERMINAL - SISTEMA DE HACKING MEJORADO
+// TERMINAL - SISTEMA DE HACKEO
 // ============================================
+
+var HACK_TARGETS = {
+    '192.168.1.25': { name: 'UNDERDECK CASINO', password: 'UNDERS3AL', url: '../Casino clandestino/underdeck.html' },
+    '192.168.1.47': { name: 'MERCADO DE COCHES', password: 'GHOST2024', url: '../Mercado de coches/index.html' },
+    '192.168.1.99': { name: 'BÓVEDA UNDERSEAL', password: 'ARCHITECT', url: '../vault/index.html' }
+};
+
+var currentTarget = null;
+var waitingForPassword = false;
+var decodeInterval = null;
+var networkScanned = false;
+
 function setupTerminal() {
-    const commandInput = document.getElementById('terminalCommand');
+    var commandInput = document.getElementById('terminalCommand');
+    if (!commandInput) return;
     
-    commandInput.addEventListener('keydown', (e) => {
+    commandInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {
             executeCommand(commandInput.value);
             commandInput.value = '';
         }
     });
-    
-    document.getElementById('terminalModal').addEventListener('transitionend', () => {
-        if (document.getElementById('terminalModal').classList.contains('active')) {
-            commandInput.focus();
-        }
-    });
 }
 
 function openTerminal() {
-    document.getElementById('terminalModal').classList.add('active');
-    addTerminalOutput('=== TERMINAL UNDERSEAL v2.4.1 ===', 'info');
-    addTerminalOutput('Escribe "?" para ayuda', 'info');
+    var modal = document.getElementById('terminalModal');
+    if (!modal) return;
+    
+    modal.classList.add('active');
+    var output = document.getElementById('terminalOutput');
+    if (output) output.innerHTML = '';
+    
+    addTerminalOutput('═══════════════════════════════════════', 'info');
+    addTerminalOutput('     TERMINAL DE HACKEO', 'info');
+    addTerminalOutput('═══════════════════════════════════════', 'info');
+    addTerminalOutput('', 'output');
+    addTerminalOutput('Escribe "scan" para buscar sistemas.', 'info');
+    
+    currentTarget = null;
+    waitingForPassword = false;
+    networkScanned = false;
+    
+    setTimeout(function() {
+        var input = document.getElementById('terminalCommand');
+        if (input) input.focus();
+    }, 100);
 }
 
 function closeTerminal() {
-    document.getElementById('terminalModal').classList.remove('active');
-    // Reset state
-    terminalUser = null;
-    terminalLevel = 0;
-    userAlias = 'guest';
-    hackProgress = 0;
-    discoveredCommands = ['?'];
-    bruteforceAttempts = 0;
-    systemCompromised = false;
+    var modal = document.getElementById('terminalModal');
+    if (modal) modal.classList.remove('active');
+    currentTarget = null;
+    waitingForPassword = false;
+    if (decodeInterval) clearInterval(decodeInterval);
 }
 
-function addTerminalOutput(text, type = 'output') {
-    const output = document.getElementById('terminalOutput');
-    output.innerHTML += `<div class="terminal-line ${type}">${text}</div>`;
-    output.scrollTop = output.scrollHeight;
-}
-
-function executeCommand(cmd) {
-    const command = cmd.trim().toLowerCase();
-    addTerminalOutput(`> ${cmd}`, 'command');
-    
-    // Sistema de comandos ocultos
-    const allCommands = {
-        // Comandos básicos
-        '?': () => {
-            addTerminalOutput('Comandos disponibles:', 'info');
-            if (discoveredCommands.includes('help') || terminalLevel >= 1) {
-                addTerminalOutput('  help - Mostrar ayuda', 'output');
-            }
-            addTerminalOutput('  ls - Listar archivos', 'output');
-            addTerminalOutput('  cat [archivo] - Ver contenido', 'output');
-            if (terminalLevel >= 2) {
-                addTerminalOutput('  scan - Escanear red', 'output');
-                addTerminalOutput('  brute - Fuerza bruta', 'output');
-                addTerminalOutput('  exploit - Ejecutar exploit', 'output');
-            }
-            if (terminalLevel >= 3) {
-                addTerminalOutput('  extract - Extraer datos', 'output');
-                addTerminalOutput('  backdoor - Crear backdoor', 'output');
-                addTerminalOutput('  root - Acceso root', 'output');
-            }
-        },
-        
-        'help': () => {
-            if (Math.random() > 0.7) {
-                addTerminalOutput('Comando no reconocido', 'error');
-            } else {
-                addTerminalOutput('Usa "?" para ayuda', 'info');
-            }
-        },
-        
-        'ls': () => {
-            addTerminalOutput('directorio: /var/www/html', 'output');
-            addTerminalOutput('  .hidden/', 'output');
-            addTerminalOutput('Escribe: cat .hidden/notes.txt', 'info');
-        },
-        
-        'cat': (args) => {
-            if (!args) {
-                addTerminalOutput('Uso: cat [archivo]', 'error');
-                return;
-            }
-            
-            if (args === '.hidden/notes.txt') {
-                addTerminalOutput('=== NOTAS SECRETAS ===', 'info');
-                addTerminalOutput('Si puedes leer esto, tienes acceso.', 'success');
-                addTerminalOutput('Password del sistema: GHOST', 'success');
-                addTerminalOutput('Usa "brute" para crackear', 'info');
-                terminalLevel = 2;
-                addTerminalOutput('Nivel de acceso: 2', 'success');
-            } else if (args === 'notes.txt') {
-                if (terminalLevel >= 1) {
-                    addTerminalOutput('=== NOTAS ===', 'info');
-                    addTerminalOutput('Remember: el password del sistema es GHOST', 'output');
-                    addTerminalOutput('Las credenciales están en /root/credentials.txt', 'output');
-                    addTerminalOutput('Usa brute para crackear', 'output');
-                } else {
-                    addTerminalOutput('Permiso denegado', 'error');
-                    addTerminalOutput('Prueba: cat .hidden/notes.txt', 'info');
-                }
-            } else if (args === 'config/sys.cfg') {
-                addTerminalOutput('SYSTEM CONFIG:', 'info');
-                addTerminalOutput('  firewall: ACTIVE', 'output');
-                addTerminalOutput('  encryption: AES-256', 'output');
-                addTerminalOutput('  vault_location: /dev/sda1', 'output');
-            } else {
-                addTerminalOutput(`Archivo no encontrado: ${args}`, 'error');
-            }
-        },
-        
-        'scan': () => {
-            if (terminalLevel < 2) {
-                addTerminalOutput('Error: nivel de acceso insuficiente', 'error');
-                return;
-            }
-            
-            addTerminalOutput('Iniciando escaneo...', 'info');
-            setTimeout(() => {
-                addTerminalOutput('[✓] 192.168.1.1 - Router', 'success');
-                addTerminalOutput('[✓] 192.168.1.10 - Servidor Underseal', 'success');
-                addTerminalOutput('[✓] 192.168.1.99ULT-DB [ - VAPROTEGIDO]', 'warning');
-                addTerminalOutput('Puertos abiertos: 22, 80, 443, 3389', 'output');
-            }, 1500);
-        },
-        
-        'brute': () => {
-            if (terminalLevel < 2) {
-                addTerminalOutput('ERROR: Necesitas nivel 2', 'error');
-                addTerminalOutput('Escribe: cat .hidden/notes.txt', 'info');
-                return;
-            }
-            
-            addTerminalOutput('Iniciando ataque de fuerza bruta...', 'error');
-            bruteforceAttempts++;
-            
-            if (bruteforceAttempts < 3) {
-                setTimeout(() => {
-                    addTerminalOutput('Intentando...', 'info');
-                    addTerminalOutput('Contraseña incorrecta', 'error');
-                    addTerminalOutput(`Intentos: ${bruteforceAttempts}/10`, 'warning');
-                }, 1500);
-            } else if (bruteforceAttempts >= 3 && bruteforceAttempts < 5) {
-                setTimeout(() => {
-                    addTerminalOutput('Probando diccionario...', 'info');
-                    addTerminalOutput('Contraseña incorrecta', 'error');
-                    addTerminalOutput('Pista: "G"', 'warning');
-                }, 1500);
-            } else if (bruteforceAttempts >= 5) {
-                setTimeout(() => {
-                    addTerminalOutput('>> CONEXIÓN ESTABLECIDA <<', 'success');
-                    addTerminalOutput('Password: GHOST', 'success');
-                    terminalLevel = 3;
-                    systemCompromised = true;
-                    addTerminalOutput('Nivel de acceso: 3 (ADMIN)', 'success');
-                    discoveredCommands.push('extract', 'backdoor', 'root');
-                }, 1500);
-            }
-        },
-        
-        'exploit': () => {
-            if (terminalLevel < 2) {
-                addTerminalOutput('Error: requiere nivel 2', 'error');
-                return;
-            }
-            
-            addTerminalOutput('Buscando vulnerabilidades...', 'info');
-            setTimeout(() => {
-                addTerminalOutput('[!] CVE-2024-XXXX encontrado', 'warning');
-                addTerminalOutput('[!] Ejecutando exploit...', 'error');
-                setTimeout(() => {
-                    addTerminalOutput('>> SHELL INVERTIDO <<', 'success');
-                    terminalLevel = 3;
-                    systemCompromised = true;
-                    addTerminalOutput('Nivel de acceso: 3 (ROOT)', 'success');
-                }, 1000);
-            }, 1500);
-        },
-        
-        'extract': () => {
-            if (!systemCompromised) {
-                addTerminalOutput('Sistema no comprometido', 'error');
-                return;
-            }
-            
-            addTerminalOutput('Extrayendo datos sensibles...', 'info');
-            setTimeout(() => {
-                addTerminalOutput('Credenciales encontradas:', 'success');
-                addTerminalOutput('  admin:GHOST', 'output');
-                addTerminalOutput('  vault:UNDERS£AL2024', 'output');
-                addTerminalOutput('  db_root:x7z9qP2m', 'output');
-                addTerminalOutput('>> BACKDOOR CREADO <<', 'success');
-            }, 1500);
-        },
-        
-        'backdoor': () => {
-            if (!systemCompromised) {
-                addTerminalOutput('Acceso denegado', 'error');
-                return;
-            }
-            
-            addTerminalOutput('Creando persistencia...', 'info');
-            setTimeout(() => {
-                addTerminalOutput('>> BACKDOOR INSTALADO <<', 'success');
-                addTerminalOutput('Puerto: 31337', 'output');
-                addTerminalOutput('Conexión reverse shell activada', 'output');
-            }, 1000);
-        },
-        
-        'root': () => {
-            if (terminalLevel < 3) {
-                addTerminalOutput('Acceso denegado', 'error');
-                return;
-            }
-            
-            addTerminalOutput('=====================================', 'info');
-            addTerminalOutput('     SISTEMA COMPROMETIDO', 'success');
-            addTerminalOutput('=====================================', 'info');
-            addTerminalOutput('Acceso ROOT obtenido', 'success');
-            addTerminalOutput('', 'output');
-            addTerminalOutput('>>> COMANDO ESPECIAL: vault <<<', 'success');
-            addTerminalOutput('Escribe "vault" para acceder', 'warning');
-        },
-        
-        'vault': () => {
-            if (terminalLevel < 3 || !systemCompromised) {
-                addTerminalOutput('ACCESO DENEGADO', 'error');
-                addTerminalOutput('El sistema está protegido', 'warning');
-                addTerminalOutput('Compromete el sistema primero', 'info');
-                return;
-            }
-            
-            addTerminalOutput('=====================================', 'success');
-            addTerminalOutput('  ACCEDIENDO A LA BÓVEDA...', 'success');
-            addTerminalOutput('=====================================', 'success');
-            
-            setTimeout(() => {
-                closeTerminal();
-                window.location.href = '../vault/index.html';
-            }, 2000);
-        },
-        
-        'clear': () => {
-            document.getElementById('terminalOutput').innerHTML = '';
-            addTerminalOutput('Terminal limpiado', 'info');
-        },
-        
-        'exit': () => {
-            addTerminalOutput('Cerrando sesión...', 'info');
-            setTimeout(closeTerminal, 500);
-        },
-        
-        // Comandos de exploración (pistas mínimas)
-        'whoami': () => {
-            addTerminalOutput(terminalUser || 'guest', 'output');
-        },
-        
-        'pwd': () => {
-            addTerminalOutput('/var/www/html', 'output');
-        },
-        
-        'uname': () => {
-            addTerminalOutput('Linux underseal-srv 5.4.0-generic', 'output');
-        },
-        
-        'id': () => {
-            addTerminalOutput(terminalLevel >= 1 ? 'uid=1000(user) gid=1000(user)' : 'uid=1000(user) gid=1000(user) groups=1000(user)', 'output');
-        },
-        
-        // Easter eggs
-        'sudo': () => {
-            addTerminalOutput('user is not in the sudoers file', 'error');
-        },
-        
-        'rm': (args) => {
-            if (args === '-rf /') {
-                addTerminalOutput('NO. Puedo ver lo que haces.', 'error');
-            } else {
-                addTerminalOutput(`rm: cannot remove '${args}': Permission denied`, 'error');
-            }
-        },
-        
-        'ls -la': () => {
-            addTerminalOutput('drwxr-xr-x  2 root root  4096 .', 'output');
-            addTerminalOutput('-rw-r--r--  1 root root   220 notes.txt', 'output');
-            addTerminalOutput('drwxr-xr-x  2 root root  4096 config/', 'output');
-            addTerminalOutput('drwxr-xr-x  3 root root  4096 .hidden/', 'output');
-        }
-    };
-    
-    // Parse command and arguments
-    const parts = command.split(' ');
-    const cmdName = parts[0];
-    const args = parts.slice(1).join(' ');
-    
-    if (allCommands[cmdName]) {
-        allCommands[cmdName](args);
-    } else if (cmdName === '') {
-        // Do nothing
-    } else {
-        // Chance de descubrir que existe el comando
-        if (Math.random() > 0.8) {
-            addTerminalOutput(`Comando no reconocido: ${cmdName}`, 'error');
-        } else {
-            addTerminalOutput('Comando no encontrado', 'error');
-        }
+function addTerminalOutput(text, type) {
+    type = type || 'output';
+    var output = document.getElementById('terminalOutput');
+    if (output) {
+        output.innerHTML += '<div class="terminal-line ' + type + '">' + text + '</div>';
+        output.scrollTop = output.scrollHeight;
     }
 }
 
-// Close terminal button
-document.getElementById('terminalClose').addEventListener('click', closeTerminal);
+function executeCommand(cmd) {
+    var command = cmd.trim().toLowerCase();
+    addTerminalOutput('> ' + cmd, 'command');
+    
+    // Comandos especiales que funcionan siempre
+    if (command === 'hack' || command === 'decode' || command === 'crack') {
+        startDecoder();
+        return;
+    }
+    
+    // Si esperamos password
+    if (waitingForPassword && currentTarget) {
+        checkPassword(cmd);
+        return;
+    }
+    
+    if (command === 'scan' || command === 'nmap' || command === 'ls') {
+        scanNetwork();
+    }
+    else if (command === 'clear' || command === 'cls') {
+        var output = document.getElementById('terminalOutput');
+        if (output) output.innerHTML = '';
+    }
+    else if (command === 'exit' || command === 'quit' || command === 'close') {
+        closeTerminal();
+    }
+    else if (command === 'help' || command === '?') {
+        addTerminalOutput('', 'output');
+        addTerminalOutput('  scan   - Escanear red local', 'output');
+        addTerminalOutput('  hack   - Crackear password', 'output');
+        addTerminalOutput('  exit   - Cerrar', 'output');
+        addTerminalOutput('', 'output');
+    }
+    else if (HACK_TARGETS[command]) {
+        connectToTarget(command);
+    }
+    else if (command.indexOf('192.168.1.') === 0) {
+        if (networkScanned) {
+            connectToTarget(command);
+        } else {
+            addTerminalOutput('IP no reconocida. Haz "scan" primero.', 'error');
+        }
+    }
+    else {
+        addTerminalOutput('Comando no reconocido.', 'error');
+    }
+}
+
+function scanNetwork() {
+    addTerminalOutput('', 'output');
+    addTerminalOutput('Escaneando...', 'info');
+    
+    setTimeout(function() {
+        addTerminalOutput('', 'output');
+        addTerminalOutput('═══════════════════════════════════════', 'info');
+        addTerminalOutput('     RESULTADOS DEL ESCANEO', 'info');
+        addTerminalOutput('═══════════════════════════════════════', 'info');
+        addTerminalOutput('', 'output');
+        addTerminalOutput('IP detectadas:', 'info');
+        addTerminalOutput('  192.168.1.25   [?] PUERTO 443', 'success');
+        addTerminalOutput('  192.168.1.47   [?] PUERTO 443', 'success');
+        addTerminalOutput('  192.168.1.99   [?] PUERTO 22', 'success');
+        addTerminalOutput('', 'output');
+        addTerminalOutput('Escribe la IP para conectar:', 'output');
+        networkScanned = true;
+    }, 2000);
+}
+
+function connectToTarget(ip) {
+    var targetData = HACK_TARGETS[ip];
+    if (!targetData) {
+        addTerminalOutput('Conexión rechazada.', 'error');
+        return;
+    }
+    
+    currentTarget = ip;
+    waitingForPassword = true;
+    
+    addTerminalOutput('', 'output');
+    addTerminalOutput('Conectando a ' + ip + '...', 'info');
+    
+    setTimeout(function() {
+        addTerminalOutput('[OK] Conexión establecida', 'success');
+        addTerminalOutput('Password requerida:', 'error');
+        addTerminalOutput('', 'output');
+        addTerminalOutput('Escribe "hack" para crackear.', 'info');
+    }, 1000);
+}
+
+function startDecoder() {
+    if (!currentTarget) {
+        addTerminalOutput('Conecta a un objetivo primero.', 'error');
+        return;
+    }
+    
+    var targetData = HACK_TARGETS[currentTarget];
+    var password = targetData.password;
+    
+    addTerminalOutput('', 'output');
+    addTerminalOutput('═══════════════════════════════════════', 'info');
+    addTerminalOutput('     INICIANDO CRACKER...', 'info');
+    addTerminalOutput('═══════════════════════════════════════', 'info');
+    
+    var iteration = 0;
+    var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    
+    decodeInterval = setInterval(function() {
+        iteration++;
+        var display = '';
+        for (var i = 0; i < password.length; i++) {
+            if (i < iteration) {
+                display += password.charAt(i);
+            } else {
+                display += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+        }
+        
+        addTerminalOutput('  CRACK: ' + display + '_', 'output');
+        
+        if (iteration > password.length + 2) {
+            clearInterval(decodeInterval);
+            addTerminalOutput('', 'output');
+            addTerminalOutput('[OK] PASSWORD: ' + password, 'success');
+            addTerminalOutput('', 'output');
+            addTerminalOutput('Introduce la password:', 'info');
+        }
+    }, 100);
+}
+
+function checkPassword(input) {
+    var targetData = HACK_TARGETS[currentTarget];
+    
+    if (input === targetData.password) {
+        addTerminalOutput('', 'output');
+        addTerminalOutput('═══════════════════════════════════════', 'success');
+        addTerminalOutput('     ACCESO CONCEDIDO', 'success');
+        addTerminalOutput('═══════════════════════════════════════', 'success');
+        
+        setTimeout(function() {
+            window.open(targetData.url, '_blank');
+            currentTarget = null;
+            waitingForPassword = false;
+        }, 1000);
+    } else {
+        addTerminalOutput('[X] Password incorrecta', 'error');
+    }
+}
+
+var closeBtn = document.getElementById('terminalClose');
+if (closeBtn) closeBtn.addEventListener('click', closeTerminal);
