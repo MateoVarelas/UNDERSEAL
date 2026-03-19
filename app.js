@@ -722,6 +722,13 @@ function checkPassword(input) {
         addTerminalOutput('     ACCESO CONCEDIDO', 'success');
         addTerminalOutput('═══════════════════════════════════════', 'success');
         
+        // Guardar acceso para que no pida password
+        if (currentTarget === '192.168.1.25') {
+            localStorage.setItem('underdeck_access', 'true');
+        } else if (currentTarget === '192.168.1.47') {
+            localStorage.setItem('mercado_access', 'true');
+        }
+        
         setTimeout(function() {
             window.open(targetData.url, '_blank');
             currentTarget = null;
