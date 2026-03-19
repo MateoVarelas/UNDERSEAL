@@ -359,6 +359,94 @@ const SLOT_PAYOUTS = {
     '🕯️': 5    // Candle - lowest
 };
 
+// ==================== JACKPOT ACUMULATIVO ====================
+let jackpotState = {
+    current: 5000,
+    base: 5000,
+    lastWin: 0,
+    lastWinTime: null,
+    progress: 0
+};
+
+// Inicializar jackpot
+function initJackpot() {
+    // Cargar jackpot guardado
+    const saved = localStorage.getItem('underdeck_jackpot');
+    if (saved) {
+        jackpotState = JSON.parse(saved);
+    }
+    updateJackpotDisplay();
+    
+    // Aumentar jackpot progresivamente cada 10 segundos
+    setInterval(() => {
+        if (!gameState.isSpinning) {
+            jackpotState.current += Math.floor(Math.random() * 50) + 10;
+            jackpotState.progress = (jackpotState.current - jackpotState.base) / 1000;
+            updateJackpotDisplay();
+            saveJackpot();
+        }
+    }, 10000);
+    
+    // Añadir al jackpot cada vez que alguien apuesta
+    window.addToJackpot = function(amount) {
+        jackpotState.current += Math.floor(amount * 0.1); // 10% de la apuesta va al jackpot
+        jackpotState.progress = (jackpotState.current - jackpotState.base) / 1000;
+        updateJackpotDisplay();
+    };
+}
+
+function updateJackpotDisplay() {
+    const jackpotEl = document.getElementById('slots-jackpot');
+    if (jackpotEl) {
+        jackpotEl.textContent = jackpotState.current.toLocaleString();
+        // Efecto de shimmer cuando aumenta
+        jackpotEl.style.textShadow = `0 0 ${10 + Math.random() * 20}px rgba(255, 215, 0, 0.8)`;
+    }
+}
+
+function saveJackpot() {
+    localStorage.setItem('underdeck_jackpot', JSON.stringify(jackpotState));
+}
+
+function triggerJackpotWin(amount) {
+    jackpotState.lastWin = amount;
+    jackpotState.lastWinTime = new Date();
+    jackpotState.current = jackpotState.base; // Reset jackpot
+    jackpotState.progress = 0;
+    saveJackpot();
+    
+    // Mostrar animación de jackpotwin
+    showJackpotAnimation(amount);
+}
+
+function showJackpotAnimation(amount) {
+    const container = document.querySelector('.jackpot-box');
+    if (container) {
+        container.classList.add('jackpot-winning');
+        
+        // Crear elementos de celebración
+        for (let i = 0; i < 20; i++) {
+            setTimeout(() => {
+                const particle = document.createElement('div');
+                particle.className = 'jackpot-particle';
+                particle.innerHTML = '💰';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 0.5 + 's';
+                container.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 2000);
+            }, i * 100);
+        }
+        
+        setTimeout(() => {
+            container.classList.remove('jackpot-winning');
+        }, 3000);
+    }
+    
+    showToast(`🎉 JACKPOT DE ${amount.toLocaleString()} FICHAS! 🎉`, 'success');
+    playSound('slotJackpot');
+}
+
 // ==================== ESTADO ====================
 let state = {
     fichas: 1000,
@@ -1107,9 +1195,15 @@ function checkSlotResults(results, bet, reelElements, lastWinDisplay, lightsCont
     let currentMultiplier = 1;
     let totalWin = 0;
     let winLines = [];
+    let isJackpot = false;
     
     // Clear previous winners
     reelElements.forEach(r => r.classList.remove('winner', 'bonus-win'));
+    
+    // Añadir parte de la apuesta al jackpot
+    if (typeof addToJackpot === 'function') {
+        addToJackpot(bet);
+    }
     
     // Check for 3 equal symbols (jackpot)
     const firstSymbol = results[0];
@@ -1121,6 +1215,14 @@ function checkSlotResults(results, bet, reelElements, lastWinDisplay, lightsCont
         const payout = SLOT_PAYOUTS[firstSymbol] || 0;
         totalWin = bet * payout;
         currentMultiplier = payout;
+        
+        // Si es el símbolo más alto (corona), también gana el jackpot acumulativo
+        if (firstSymbol === '👑') {
+            isJackpot = true;
+            totalWin += jackpotState.current;
+            triggerJackpotWin(jackpotState.current);
+        }
+        
         winLines.push(`JACKPOT! ${firstSymbol} x${payout}`);
     } else {
         // Check for pairs (2 matching symbols)
@@ -1152,11 +1254,11 @@ function checkSlotResults(results, bet, reelElements, lastWinDisplay, lightsCont
     }
     
     lightsContainer.classList.remove('playing');
-    resolveSlotsBet(results, bet, totalWin);
+    resolveSlotsBet(results, bet, totalWin, isJackpot);
     spinBtn.disabled = false;
 }
 
-function resolveSlotsBet(results, bet, totalWin) {
+function resolveSlotsBet(results, bet, totalWin, isJackpot = false) {
     const lastWinDisplay = document.getElementById('slots-last-win');
     
     // Update the prize display
@@ -1167,12 +1269,16 @@ function resolveSlotsBet(results, bet, totalWin) {
     if (totalWin > 0) {
         state.fichas += totalWin;
         state.totalFichasGanadas += (totalWin - bet);
-        showToast(`¡GANASTE! ${totalWin} fichas`, "success");
-        // Different sounds for big win vs small win
-        if (totalWin >= bet * 30) {
+        
+        if (isJackpot) {
+            showToast(`🎉 JACKPOT! ¡GANASTE ${totalWin.toLocaleString()} fichas! 🎉`, 'success');
+            playSound('slotJackpot');
+        } else if (totalWin >= bet * 30) {
+            showToast(`¡GRAN GANADA! ${totalWin} fichas`, 'success');
             playSound('slotJackpot');
             setTimeout(() => playSound('slotCoin'), 200);
         } else {
+            showToast(`¡GANASTE! ${totalWin} fichas`, 'success');
             playSound('slotWin');
             setTimeout(() => playSound('slotCoin'), 100);
         }
